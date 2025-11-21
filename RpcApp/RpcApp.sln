@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcApp", "RpcApp.csproj", "{B49494C6-2F55-16A9-7081-5BABC20D0E40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcApp.Domain", "..\RpcApp.Domain\RpcApp.Domain.csproj", "{1A6A3461-23CA-2846-5E5D-F51EF3DF9CAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B49494C6-2F55-16A9-7081-5BABC20D0E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B49494C6-2F55-16A9-7081-5BABC20D0E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B49494C6-2F55-16A9-7081-5BABC20D0E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B49494C6-2F55-16A9-7081-5BABC20D0E40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A6A3461-23CA-2846-5E5D-F51EF3DF9CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A6A3461-23CA-2846-5E5D-F51EF3DF9CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A6A3461-23CA-2846-5E5D-F51EF3DF9CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A6A3461-23CA-2846-5E5D-F51EF3DF9CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {62E6B7E5-347D-46A5-BF2B-2F7982F500C5}
+	EndGlobalSection
+EndGlobal
