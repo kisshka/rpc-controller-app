@@ -1,0 +1,184 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore
+@using RpcControllerClient.Models
+@inject ModalService ModalService;
+@inject ConfirmService ComfirmService;
+@inject RpcClientContext RpcClientContext;
+
+
+<PageTitle>Home</PageTitle>
+
+<div>
+    <div class="search-string">
+
+    </div>
+    <div class="table">
+        <Tabs>
+            <TabPane Tab="Устройства" >
+                <Table @ref="_devicesTable" TItem="Devices" PageSize="5" Total="_devicesTotal" DataSource="_devicesDataSource" OnChange="OnDevicesChange">
+                    <PropertyColumn Property="c => c.DevicesId"></PropertyColumn>
+                    <PropertyColumn Property="c => c.DeviceName"></PropertyColumn>
+                    <PropertyColumn Property="c => c.DeviceStatus">
+                        @{
+                            var color = TagColor.Red;
+                            if (context.DeviceStatus)
+                            {
+                                color = TagColor.Green;
+                            }
+                        }
+                        <Tag Color="@color"></Tag>
+                    </PropertyColumn>
+                </Table>
+            </TabPane>
+            <TabPane Tab="Ученики">
+                <Table @ref="_pupilsTable" TItem="Pupils" PageSize="5" Total="_pupilsTotal" DataSource="_pupilsDataSource" OnChange="OnPupilsChange">
+                    <PropertyColumn Property="c => c.SurnamePupil"></PropertyColumn>
+                    <PropertyColumn Property="c => c.NamePupil"></PropertyColumn>
+                    <PropertyColumn Property="c => c.PatronymicPupil"></PropertyColumn>
+                    <PropertyColumn Property="c => c.CardNumber"></PropertyColumn>
+                    <PropertyColumn Property="c => c.CardValidityPeriod">
+                        @{
+                            <p>@context.CardValidityPeriod.ToString("dd.MM.yyyy")</p>
+                        }
+                    </PropertyColumn>
+                </Table>
+            </TabPane>
+            <TabPane Tab="Посещения">
+                <Table @ref="_visitingsTable" TItem="Visiting" PageSize="5" Total="_visitingsTotal" DataSource="_visitingsDataSource" OnChange="OnVisitingsChange">
+                    <PropertyColumn Property="c => c.VisitingId"></PropertyColumn>
+                    <PropertyColumn Property="c => c.VisitingDateTime">
+                        @{
+                            <p>@context.VisitingDateTime.ToString("dd.MM.yyyy")</p>
+                        }
+                    </PropertyColumn>
+                    <PropertyColumn Title="Время посещения" Property="c => c.VisitingDateTime">
+                        @{
+                            <p>@context.VisitingDateTime.ToString("HH:ss")</p>
+                        }
+                    </PropertyColumn>
+                    <PropertyColumn Title="Ф.И.О." Property="c => c.Pupils">
+                        @{
+                            foreach(var p in context.Pupils)
+                            {
+
+                                <p>@GetShortName(p)</p>
+                            }
+                        }
+                    </PropertyColumn>
+                    <PropertyColumn Property="c => c.Direction">
+                        @{
+                            var direct = "Выход";
+                            if (context.Direction)
+                            {
+                                direct = "Вход";
+                            }
+                            <p>@direct</p>
+                        }
+                    </PropertyColumn>
+                    <PropertyColumn Property="c => c.Devices.DevicesId"></PropertyColumn>
+                </Table>
+            </TabPane>
+        </Tabs>
+    </div>
+</div>
+
+@code {
+    //Таблицы
+    ITable _devicesTable;
+    ITable _pupilsTable;
+    ITable _visitingsTable;
+
+    // Данные для таблиц
+    List<Devices> _devicesDataSource = new();
+    List<Pupils> _pupilsDataSource = new();
+    List<Visiting> _visitingsDataSource = new();
+
+    // Общее количество записей
+    int _devicesTotal;
+    int _pupilsTotal;
+    int _visitingsTotal;
+
+    async Task OnDevicesChange(QueryModel<Devices> query)
+    {
+        var queryable = RpcClientContext.Devices.AsQueryable();
+        _devicesTotal = queryable.Count();
+        _devicesDataSource = await queryable
+            .ExecuteTableQuery(query)
+            .CurrentPagedRecords(query)
+            .ToListAsync();
+    }
+
+    async Task OnPupilsChange(QueryModel<Pupils> query)
+    {
+        var queryable = RpcClientContext.Pupils
+        .AsQueryable();
+
+        _pupilsTotal = queryable.Count();
+        _pupilsDataSource = await queryable
+            .ExecuteTableQuery(query)
+            .CurrentPagedRecords(query)
+            .ToListAsync();
+    }
+
+    async Task OnVisitingsChange(QueryModel<Visiting> query)
+    {
+        var queryable = RpcClientContext.Visitings
+        .Include(v => v.Devices)
+        .Include(v => v.Pupils)
+        .AsQueryable();
+
+        _visitingsTotal = queryable.Count();
+        _visitingsDataSource = await queryable
+            .ExecuteTableQuery(query)
+            .CurrentPagedRecords(query)
+            .ToListAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadInitialData();
+    }
+
+    private async Task LoadInitialData()
+    {
+        _devicesDataSource = await RpcClientContext.Devices
+            .Take(5)
+            .ToListAsync();
+        _devicesTotal = await RpcClientContext.Devices.CountAsync();
+
+
+        _pupilsDataSource = await RpcClientContext.Pupils
+            .Take(5)
+            .ToListAsync();
+        _pupilsTotal = await RpcClientContext.Pupils.CountAsync();
+
+
+        _visitingsDataSource = await RpcClientContext.Visitings
+            .Include(v => v.Devices)
+            .Include(v => v.Pupils)
+            .Take(5)
+            .ToListAsync();
+        _visitingsTotal = await RpcClientContext.Visitings.CountAsync();
+
+        StateHasChanged();
+    }
+
+    void OnTabChange()
+    {
+        StateHasChanged();
+    }
+
+    private string GetShortName(Pupils pupil)
+    {
+        if (pupil == null) return "Неизвестно";
+
+        var surname = pupil.SurnamePupil ?? "";
+        var nameInitial = pupil.NamePupil?.Length > 0 ? $"{pupil.NamePupil[0]}." : "";
+        var patronymicInitial = pupil.PatronymicPupil?.Length > 0 ? $"{pupil.PatronymicPupil[0]}." : "";
+
+        return $"{surname} {nameInitial}{patronymicInitial}";
+    }
+}
