@@ -14,6 +14,18 @@ namespace RpcApp.Domain
 
         [XmlRpcMethod("SETCONFIGURATIONHWSRV")]
         XmlRpcStruct SetConfigurationHwSrw(SetConfigurationHwSrvParams p);
+
+        [XmlRpcMethod("GETDEVICE")]
+        XmlRpcStruct GetDevice(GetDeviceParams p);
+
+        [XmlRpcMethod("GetDeviceListAsync")]
+        XmlRpcStruct GetDeviceListAsync(GetDeviceListAsyncParams p);
+
+        [XmlRpcMethod("CONTROLOBJECTS")]
+        XmlRpcStruct ControlObjects (ControlObjectsParams p);
+
+        [XmlRpcMethod("SynchronizeOneKey")]
+        XmlRpcStruct SynchronizeOneKey (SynchronizeOneKeyParams p);
     }
 
     /// <summary>
@@ -47,9 +59,9 @@ namespace RpcApp.Domain
                     login = "ADMINISTRATOR",
                     password = "ORION",
                     scribe = 65535,
-                    scribeports = "SCRIBEALLPORTS",
-                    ipserver = "127.0.0.1",
-                    portserver = 8095
+                    scribePorts = "SCRIBEALLPORTS",
+                    ipServer = "127.0.0.1",
+                    portServer = 8095
                 };
 
                 Console.WriteLine("Отправляем запрос SetSubscribe...");
@@ -103,8 +115,8 @@ namespace RpcApp.Domain
                     guid = guid,
                     login = "ADMINISTRATOR",
                     password = "ORION",
-                    ipserver = "127.0.0.1",
-                    portserver = 8095
+                    ipServer = "127.0.0.1",
+                    portServer = 8095
                 };
 
                 Console.WriteLine("Отправляем запрос CloseScribe...");
@@ -142,20 +154,42 @@ namespace RpcApp.Domain
         {
             try
             {
+                Adress address = new()
+                {
+                    addrdevice = 1,
+                    addrPult = 0,
+                    addrPort = 3,
+                };
+
                 SetConfigurationHwSrvParams configurationParams = new()
                 {
                     guid = guid,
-                    ports = new Ports()
+                    ports = [
+                    new Ports()
                     {
-                        numberport = 3,
-                        typeport = "COM",
-                        typeprotocol = 1,
-                        typeconverter = 2,
-                        portpriority = 3,
-                        portbaund = 9600,
-                        portstate = "OPEN",
-                        loopstate = "ACTIVE"
+
+                        typePort = "COM",
+                        numberPort = 3,
+                        typeProtocol = 1,
+                        typeConverter = 2,
+                        portPriority = 0,
+                        portBaund = 9600,
+                        rpcStatePort = "OPEN",
+                        loopState = "ACTIVE"
                     }
+                    ],
+                    devices = [
+                      new Device ()
+                        {
+                         address = address, 
+                         rpcStatusDevice = "ON",
+                         type = 16,
+                        priorityDevice = 3,
+                        version = 220,
+    }
+                    
+                    ]
+ 
                 };
 
 
@@ -183,5 +217,149 @@ namespace RpcApp.Domain
             }
         }
 
+        /// <summary>
+        /// Отправка запроса GetDevice -  Узнать состояние и информацию о устройстве
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
+        public void GetDevice (string guid)
+        {
+            try
+            {
+                GetDeviceParams getDeviceParams = new()
+                {
+                    guid = guid,
+                    ipServer = "127.0.0.1",
+                    portServer = 8095,
+                    resultReturnMethod = "ASYNCRESULT",
+                    devices = [
+                        new Adress()
+                        {
+                            addrdevice = 1,
+                            addrPort = 3
+                        }
+                    ],
+                    returnDataFromClient = new()
+                    {
+                        clientMessage = "my message"
+                    }
+                };
+
+                Console.WriteLine("Отправляем запрос GetDevice...");
+                var response = _rpcClient.GetDevice(getDeviceParams) ?? throw new Exception("Пустой ответ от сервера");
+
+                string result = (string)response["RESULT"];
+                Console.WriteLine(response);
+                Console.WriteLine($"Результат: {result}");
+
+
+                if (result == "METHOD IS EXECUTE")
+                {
+                        Console.WriteLine($"Информация об устройстве получена");
+                }
+            }
+            catch (XmlRpcFaultException ex)
+            {
+                throw new Exception($"XML-RPC ошибка: {ex.FaultCode} - {ex.FaultString}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Отправка запроса GetDevice -  Узнать состояние и информацию о устройстве
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
+        public void GetDeviceListAsync()
+        {
+                GetDeviceListAsyncParams getDeviceListAsyncParams = new()
+                {
+                    ipServer = "127.0.0.1",
+                    portserver = 8095,
+                    methodNameForAnswer = "GetDeviceListAsyncResult"
+                };
+
+                Console.WriteLine("Отправляем запрос GetDeviceListAsync...");
+                _ = _rpcClient.GetDeviceListAsync(getDeviceListAsyncParams);
+        }
+
+        /// <summary>
+        /// Отправка запроса ControlObjects -  ПОКА НЕ РАБОТАЕТ
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
+        public void ControlObjects(string guid)
+        {
+            try
+            {
+                Adress2 address = new()
+                {
+                    addrDevice = 127,
+                    addPort = 3,
+                    addRelement = 1
+                };
+
+                ControlObjectsParams controlObjectsParams = new()
+                {
+                    guid = guid,
+                    objects = [
+                        new Objects()
+                        {
+                            typeObject = "ZONE",
+                            controlWord = "ARM",
+                            address = address,
+                        }
+                    ]
+                };
+
+                Console.WriteLine("Отправляем запрос ControlObjects...");
+                var response = _rpcClient.ControlObjects(controlObjectsParams) ?? throw new Exception("Пустой ответ от сервера");
+
+                string result = (string)response["RESULT"];
+                Console.WriteLine(response);
+                Console.WriteLine($"Результат: {result}");
+
+
+                if (result == "METHOD IS EXECUTE")
+                {
+                    Console.WriteLine($"Информация об устройстве получена");
+                }
+            }
+            catch (XmlRpcFaultException ex)
+            {
+                throw new Exception($"XML-RPC ошибка: {ex.FaultCode} - {ex.FaultString}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка: {ex.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// Отправка запроса SynchronizeOneKey -  синхронизировать ключ, находящийся в таблице модуля управления
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
+        public void SynchronizeOneKey(string guid, int id)
+        {
+            SynchronizeOneKeyParams synchronizeOneKeyParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "SynchronizeOneKeyResult",
+                id = id,
+                autoWriting = 1,
+                rewriteDeleted = 0,
+                rewriteBlocked = 0
+    };
+
+            Console.WriteLine("Отправляем запрос SynchronizeOneKey...");
+            _ = _rpcClient.SynchronizeOneKey(synchronizeOneKeyParams);
+        }
     }
 }

@@ -12,11 +12,14 @@ class Program
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
+        client.GetDevice(guid);
 
-        client.CloseScribe(guid);
-        client.SetConfigurationHwSrv(guid);
+        client.GetDeviceListAsync();
+
+        //client.SynchronizeOneKey(guid, 123);
         /*  для ручного тестирования
+        //client.ControlObjects(guid);
                 subscriber.DebugRawHttp();*/
-
+        Console.ReadKey(true);
     }
 }
