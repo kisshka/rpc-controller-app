@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace RpcApp.Server
 {
-    public class ValueStruct
+    public struct ValueStruct
     {
         public int VALUE;
     }
 
-    public class LongState
+    public struct LongState
     {
         public ValueStruct[] data;
     }
 
-    public class ShleifItem
+    public struct ShleifItem
     {
         public int ID;
         public int Address;
@@ -24,7 +24,7 @@ namespace RpcApp.Server
         public ValueStruct[] LONGSTATE;
     }
 
-    public class ReaderItem
+    public struct ReaderItem
     {
         public int ID;
         public int Address;
@@ -32,7 +32,7 @@ namespace RpcApp.Server
         public ValueStruct[] LONGSTATE;
     }
 
-    public class RelayItem
+    public struct RelayItem
     {
         public int ID;
         public int Address;
@@ -40,7 +40,7 @@ namespace RpcApp.Server
         public ValueStruct[] LONGSTATE;
     }
 
-    public class DeviceItem
+    public struct DeviceItem
     {
         public int DeviceAddress;
         public int DeviceType;
@@ -52,14 +52,14 @@ namespace RpcApp.Server
         public RelayItem[] RelayList;
     }
 
-    public class ComPortItem
+    public struct ComPortItem
     {
         public int ComPort;
         public DeviceItem[] DeviceList;
     }
 
     // Основной класс запроса
-    public class RequestData
+    public struct RequestData
     {
         public ComPortItem[] ComPortList;
         public string IPSERVER;

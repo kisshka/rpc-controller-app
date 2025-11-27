@@ -1,4 +1,5 @@
-﻿using CookComputing.XmlRpc;
+﻿using Horizon.XmlRpc.Core;
+using Horizon.XmlRpc.Client;
 
 namespace RpcApp.Domain
 {

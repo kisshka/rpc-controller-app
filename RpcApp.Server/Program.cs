@@ -11,48 +11,14 @@ namespace RpcApp.Server
 {
     public interface IDeviceService
     {
-        [XmlRpcMethod("SETSUBSCRIBE")]
-        XmlRpcStruct SetSubscribe(Params p);
 
         [XmlRpcMethod("GetDeviceListAsyncResult")]
         XmlRpcStruct GetDeviceListAsyncResult(RequestData p);
-    }
-    public class Params
-    {
-        public string login { get; set; }
-        public string password { get; set; }
-        public int scribe { get; set; }
-        public string scribePorts { get; set; }
-        public string ipServer { get; set; }
-        public int portServer { get; set; }
     }
 
     [XmlRpcService]
     public class AddService : XmlRpcListenerService, IDeviceService
     {
-        public XmlRpcStruct SetSubscribe(Params subscribeParams)
-        {
-            Console.WriteLine("=== SetSubscribe Request Received ===");
-            Console.WriteLine($"Login: {subscribeParams.login}");
-            Console.WriteLine($"Password: {subscribeParams.password}");
-            Console.WriteLine($"Scribe: {subscribeParams.scribe}");
-            Console.WriteLine($"ScribePorts: {subscribeParams.scribePorts}");
-            Console.WriteLine($"IP Server: {subscribeParams.ipServer}");
-            Console.WriteLine($"Port Server: {subscribeParams.portServer}");
-
-            string guid = Guid.NewGuid().ToString();
-            Console.WriteLine($"Generated GUID: {guid}");
-
-            var resultData = new XmlRpcStruct();
-            resultData["GUID"] = guid;
-
-            var response = new XmlRpcStruct();
-            response["RESULT"] = "METHOD IS EXECUTE";
-            response["RESULTDATA"] = resultData;
-
-            Console.WriteLine("=== Response sent ===");
-            return response;
-        }
         public XmlRpcStruct GetDeviceListAsyncResult(RequestData requestData)
         {
             Console.WriteLine("=== XML-RPC Request Received ===");
