@@ -12,14 +12,21 @@ class Program
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
-        client.GetDevice(guid);
+        //client.GetDevice(guid);
 
         client.GetDeviceListAsync();
+        client.GetListMethods(guid);
+        //client.ReadKeyCodeFromReader(guid);
 
-        //client.SynchronizeOneKey(guid, 123);
-        /*  для ручного тестирования
-        //client.ControlObjects(guid);
-                subscriber.DebugRawHttp();*/
+        /*        client.GetPasswordListWithStatus(guid);
+                client.ReadDeviceKeyList(guid);*/
+
+        //client.SynchronizeOneKey(guid, 369);
+
+
+        client.AddPerson(guid, "Ivanov", "Ivan");
+
         Console.ReadKey(true);
+        
     }
 }

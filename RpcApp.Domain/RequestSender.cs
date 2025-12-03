@@ -1,5 +1,7 @@
 ﻿using Horizon.XmlRpc.Core;
 using Horizon.XmlRpc.Client;
+using RpcApp.Domain.Structures;
+using System.Text;
 
 namespace RpcApp.Domain
 {
@@ -26,7 +28,25 @@ namespace RpcApp.Domain
         XmlRpcStruct ControlObjects (ControlObjectsParams p);
 
         [XmlRpcMethod("SynchronizeOneKey")]
-        XmlRpcStruct SynchronizeOneKey (SynchronizeOneKeyParams p);
+        bool SynchronizeOneKey (SynchronizeOneKeyParams p);
+
+        [XmlRpcMethod("ReadKeyCodeFromReader")]
+        XmlRpcStruct ReadKeyCodeFromReader(ReadKeyCodeFromReaderParams p);
+
+        [XmlRpcMethod("GetPasswordListWithStatus")]
+        XmlRpcStruct GetPasswordListWithStatus(GetPasswordListWithStatusParams p);
+
+        [XmlRpcMethod("ReadDeviceKeyList")]
+        void ReadDeviceKeyList(ReadDeviceKeyListParams p);
+
+        [XmlRpcMethod("ReadConfiguration")]
+        void ReadConfiguration(ReadConfigurationParams p);
+
+        [XmlRpcMethod("GETLISTMETHODS")]
+        void GetListMethods(GetListMethodsParams p);
+
+        [XmlRpcMethod("RefreshTablesData")]
+        void RefreshTablesData(RefreshTablesDataParams p);
     }
 
     /// <summary>
@@ -42,6 +62,7 @@ namespace RpcApp.Domain
         public RequestSender()
         {
             _rpcClient = XmlRpcProxyGen.Create<IRpcProxy>();
+
         }
 
         /// <summary>
@@ -60,9 +81,15 @@ namespace RpcApp.Domain
                     login = "ADMINISTRATOR",
                     password = "ORION",
                     scribe = 65535,
-                    scribePorts = "SCRIBEALLPORTS",
                     ipServer = "127.0.0.1",
-                    portServer = 8095
+                    portServer = 8095,
+                    scribePorts = "SCRIBEALLPORTS",
+                    ports = [
+                        new SubscribePort() {
+                            addPort = 3,
+                            scribeDevices = "SCRIBEALLDEVICES"
+                        }
+                    ]
                 };
 
                 Console.WriteLine("Отправляем запрос SetSubscribe...");
@@ -362,5 +389,102 @@ namespace RpcApp.Domain
             Console.WriteLine("Отправляем запрос SynchronizeOneKey...");
             _ = _rpcClient.SynchronizeOneKey(synchronizeOneKeyParams);
         }
+
+        public void ReadKeyCodeFromReader (string guid)
+        {
+            ReadKeyCodeFromReaderParams keyCodeFromReaderParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "GetKeyCode",
+                ComPort = 3,
+                PKUAddress = 0,
+                DeviceAddress = 1,
+                DeviceType = 16,
+                AggregateAddress = 1,
+            };
+
+            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            _ = _rpcClient.ReadKeyCodeFromReader(keyCodeFromReaderParams);
+        }
+
+        public void GetPasswordListWithStatus (string guid)
+        {
+            GetPasswordListWithStatusParams passwordListParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "ReturnPasswordList",
+            };
+
+            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            _ = _rpcClient.GetPasswordListWithStatus(passwordListParams);
+        }
+
+        public void ReadDeviceKeyList(string guid)
+        {
+            ReadDeviceKeyListParams deviceKeyListParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "GetDeviceKeyList",
+                PKUAddress = 0,
+                DeviceAddress = 1,
+                ReaderAddress = 1,
+            };
+
+            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            _rpcClient.ReadDeviceKeyList(deviceKeyListParams);
+        }
+
+
+        public void ReadConfiguration(string guid)
+        {
+            ReadConfigurationParams configurationParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "GetConfiguration",
+                ComPort = 3,
+                PKUAddress = 0,
+                DeviceAddress = 1,
+                ReaderAddress = 1,
+            };
+
+            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            _rpcClient.ReadConfiguration(configurationParams);
+        }
+
+        public void GetListMethods(string guid)
+        {
+            GetListMethodsParams methodsParams = new()
+            {
+                guid = guid,
+            };
+
+            Console.WriteLine("Отправляем запрос GetListMethods...");
+            _rpcClient.GetListMethods(methodsParams);
+        }
+
+
+        public void RefreshTablesData(string guid, XmlRpcStruct[] tableList)
+        {   
+            RefreshTablesDataParams refreshTablesDataParams = new()
+            {
+                guid = guid,
+                ipServer = "127.0.0.1",
+                portServer = 8095,
+                methodNameForAnswer = "GetConfiguration",
+                TableList = tableList
+            };
+
+            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            _rpcClient.RefreshTablesData(refreshTablesDataParams);
+        }
+
     }
 }

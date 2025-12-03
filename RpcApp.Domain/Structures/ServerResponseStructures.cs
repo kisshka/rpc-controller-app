@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Horizon.XmlRpc.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RpcApp.Server
+namespace RpcApp.Domain.Structures
 {
     public struct ValueStruct
     {
@@ -58,8 +59,10 @@ namespace RpcApp.Server
         public DeviceItem[] DeviceList;
     }
 
-    // Основной класс запроса
-    public struct RequestData
+    /// <summary>
+    /// Параметры ответа GetDeviceListAsyncResult
+    /// </summary>
+    public struct GetDeviceListAsyncResultParams
     {
         public ComPortItem[] ComPortList;
         public string IPSERVER;
@@ -67,4 +70,21 @@ namespace RpcApp.Server
         public bool Result;
         public int MessageType;
     }
+
+    /// <summary>
+    /// Параметры ответа GetKeyCode
+    /// </summary>
+    public struct GetKeyCodeParams
+    {
+        public int AggregateAddress;
+        public string Result;
+        public string IPSERVER;
+        public string MethodName;
+        public int MessageType;
+        public int ComPort;
+        public int PKUAddress;
+        public int DeviceAddress;
+        public int ID;
+    }
+
 }
