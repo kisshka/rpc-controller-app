@@ -9,6 +9,8 @@ class Program
         //Необходимо для того чтобы не было ошибки с кодировкой
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+
+
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
@@ -24,7 +26,6 @@ class Program
         //client.SynchronizeOneKey(guid, 369);
 
 
-        client.AddPerson(guid, "Ivanov", "Ivan");
 
         Console.ReadKey(true);
         

@@ -10,6 +10,22 @@ using System.Threading.Tasks;
 
 namespace RpcApp.Domain
 {
+    //КЛАССЫ СОБЫТИЙ ДЛЯ ПЕРЕДАЧИ ДАННЫХ
+    public class RsEventArgs : EventArgs
+    {
+        public string Guid { get; set; }
+        public string NameType { get; set; }
+        public int Event { get; set; }
+        public string NameEvent { get; set; }
+    }
+
+
+    public class KeyCodeEventArgs : EventArgs
+    {
+        public string KeyCode { get; set; }
+    }
+
+
     public interface IDeviceService
     {
 
@@ -27,9 +43,44 @@ namespace RpcApp.Domain
         XmlRpcStruct GetDeviceKeyList(XmlRpcStruct p);
     }
 
+
+    /// <summary>
+    ///  Сервер для прослушивания событий, приходящих от ядра Орион
+    /// <example>
+    /// Запуск листенера и подписка на получение событий
+    /// <code>
+    /// 
+    ///    var server = new Server();
+
+    ///     server.RsEventReceived += (args) =>
+    ///        {
+    ///    Console.WriteLine($"\nПОЛУЧЕНО НОВОЕ СОБЫТИЕ");
+    ///     Console.WriteLine($"  Событие: {args.NameEvent}");
+    ///    Console.WriteLine($"  Тип: {args.NameType}");
+    ///   Console.WriteLine($"  Код события: {args.Event}");
+    ///   Console.WriteLine($"  Время: {DateTime.Now:HH:mm:ss}");
+    ///    Console.WriteLine();
+    /// };
+    /// 
+    ///     server.KeyCodeReceived += (args) =>
+    /// {
+    ///    Console.WriteLine($"\n[ПОЛУЧЕНО НОВОЕ СОБЫТИЕ");
+    ///    Console.WriteLine($"  Код ключа: {args.KeyCode}");
+    ///   Console.WriteLine($"  Время: {DateTime.Now:HH:mm:ss}");
+    ///    Console.WriteLine();
+    /// };
+
+    ///     var serverThread = new Thread(() => Server.StartListener());
+    /// serverThread.Start();
+    /// </code>
+    /// </example>
+    /// </summary>
     [XmlRpcService]
     public class Server : XmlRpcListenerService, IDeviceService
     {
+        public event Action<RsEventArgs> RsEventReceived;
+        public event Action<KeyCodeEventArgs> KeyCodeReceived;
+
         public XmlRpcStruct GetDeviceListAsyncResult(GetDeviceListAsyncResultParams p)
         {
             Console.WriteLine("=== XML-RPC Request Received ===");
@@ -45,7 +96,8 @@ namespace RpcApp.Domain
         public XmlRpcStruct OnRsEvent(XmlRpcStruct p)
         {
             Console.WriteLine("===НОВОЕ СОБЫТИЕ===");
-            Console.WriteLine($"GUID: {(string)p["GUID"]}");
+            var guid = (string)p["GUID"];
+            Console.WriteLine($"GUID: {guid}");
             XmlRpcStruct dataEvents = (XmlRpcStruct)p["DATAEVENTS"];
             Console.WriteLine((string)dataEvents["NAMETYPE"]);
 
@@ -61,6 +113,14 @@ namespace RpcApp.Domain
             }
             Console.WriteLine("=== End of ONRSEVENT ===");
 
+            RsEventReceived?.Invoke(new RsEventArgs
+            {
+                Guid = guid,
+                NameType = (string)dataEvents["NAMETYPE"],
+                Event = (int)dataEvents["EVENT"],
+                NameEvent = (string)dataEvents["NAMEEVENT"]
+            });
+
 
             return GetBaseResponse();
         }
@@ -69,6 +129,11 @@ namespace RpcApp.Domain
         {
             Console.WriteLine("===КЛЮЧ СЧИТАН===");
             Console.WriteLine(p.Result);
+
+            KeyCodeReceived?.Invoke(new KeyCodeEventArgs
+            {
+                KeyCode = p.Result
+            });
 
             return GetBaseResponse();
         }
@@ -94,6 +159,7 @@ namespace RpcApp.Domain
         /// <summary>
         /// Запуск сервера и его прослушивания
         /// </summary>
+        
         public static void StartListener()
         {
             //Необходимо для того чтобы не было ошибки с кодировкой

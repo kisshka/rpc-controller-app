@@ -15,7 +15,6 @@ namespace RpcApp.Server
     {
         static void Main() {
 
-            Domain.Server.StartListener();
         }
 
     }
