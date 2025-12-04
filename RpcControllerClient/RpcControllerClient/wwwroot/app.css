@@ -63,3 +63,27 @@ h1:focus {
 .ant-tag-red {
     background: #ff3426;
 }
+
+.ant-table-thead > tr > th {
+    text-align: center;
+}
+
+.ant-table-tbody > tr > td {
+    text-align: center;
+}
+
+.ant-table table {
+    width: 90%;
+    justify-self:center;
+}
+
+.ant-pagination {
+    justify-self:center;
+}
+
+.ant-space {
+    width: 90%;
+    justify-content: space-between;
+    margin-left: 5%;
+    margin-bottom: 1rem;
+}

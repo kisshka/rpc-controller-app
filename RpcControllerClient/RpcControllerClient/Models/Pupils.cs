@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace RpcControllerClient.Models
 {
@@ -36,7 +38,7 @@ namespace RpcControllerClient.Models
 
         [Required]
         [Display(Name = "Номер карты")]
-        public int CardNumber { get; set; }
+        public string CardNumber { get; set; }  
 
         public List<Visiting>? Visitings { get; set; }
     }

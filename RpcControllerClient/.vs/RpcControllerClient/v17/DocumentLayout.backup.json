@@ -5,10 +5,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{AA865D3F-D64F-406C-91A4-E4CE1F5665CF}|RpcControllerClient\\RpcControllerClient.csproj|d:\\visual studio\\rpc-controller-app\\rpccontrollerclient\\rpccontrollerclient\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{AA865D3F-D64F-406C-91A4-E4CE1F5665CF}|RpcControllerClient\\RpcControllerClient.csproj|solutionrelative:rpccontrollerclient\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AA865D3F-D64F-406C-91A4-E4CE1F5665CF}|RpcControllerClient\\RpcControllerClient.csproj|d:\\visual studio\\rpc-controller-app\\rpccontrollerclient\\rpccontrollerclient\\models\\visiting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AA865D3F-D64F-406C-91A4-E4CE1F5665CF}|RpcControllerClient\\RpcControllerClient.csproj|solutionrelative:rpccontrollerclient\\models\\visiting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,28 +46,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Visiting.cs",
-              "DocumentMoniker": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Models\\Visiting.cs",
-              "RelativeDocumentMoniker": "RpcControllerClient\\Models\\Visiting.cs",
-              "ToolTip": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Models\\Visiting.cs",
-              "RelativeToolTip": "RpcControllerClient\\Models\\Visiting.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBkAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T10:49:45.008Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Home.razor",
               "DocumentMoniker": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "RpcControllerClient\\Components\\Pages\\Home.razor",
               "ToolTip": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
               "RelativeToolTip": "RpcControllerClient\\Components\\Pages\\Home.razor",
-              "ViewState": "AgIAACUAAAAAAAAAAAAAAEIAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAEoBAAAAAAAAAAAswGkBAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T09:38:18.692Z",
+              "WhenOpened": "2025-11-26T10:59:59.739Z",
               "EditorCaption": ""
             }
           ]

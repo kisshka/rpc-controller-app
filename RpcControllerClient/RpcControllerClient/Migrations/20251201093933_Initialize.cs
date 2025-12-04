@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RpcControllerClient.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace RpcControllerClient.Migrations
                     PatronymicPupil = table.Column<string>(type: "TEXT", nullable: false),
                     ClassNumber = table.Column<string>(type: "TEXT", nullable: false),
                     CardValidityPeriod = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CardNumber = table.Column<int>(type: "INTEGER", nullable: false)
+                    CardNumber = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

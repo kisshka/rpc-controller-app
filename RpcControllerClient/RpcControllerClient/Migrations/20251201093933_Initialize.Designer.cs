@@ -11,8 +11,8 @@ using RpcControllerClient.Models;
 namespace RpcControllerClient.Migrations
 {
     [DbContext(typeof(RpcClientContext))]
-    [Migration("20251125092353_Init")]
-    partial class Init
+    [Migration("20251201093933_Initialize")]
+    partial class Initialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,8 +44,9 @@ namespace RpcControllerClient.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CardNumber")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CardValidityPeriod")
                         .HasColumnType("TEXT");
