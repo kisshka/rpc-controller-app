@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\requestsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\requestsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|solutionrelative:rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Server.cs",
+              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Server.cs",
+              "RelativeDocumentMoniker": "RpcApp.Domain\\Server.cs",
+              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Server.cs",
+              "RelativeToolTip": "RpcApp.Domain\\Server.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T08:43:24.826Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RequestSender.cs",
+              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\RequestSender.cs",
+              "RelativeDocumentMoniker": "RpcApp.Domain\\RequestSender.cs",
+              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\RequestSender.cs",
+              "RelativeToolTip": "RpcApp.Domain\\RequestSender.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T08:43:24.037Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
+              "RelativeDocumentMoniker": "RpcApp\\Program.cs",
+              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
+              "RelativeToolTip": "RpcApp\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T08:42:56.727Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
