@@ -123,8 +123,8 @@ namespace RpcApp.Domain.Structures
         [XmlRpcMember("PORTPRIORITY")]
         public int portPriority;
 
-        [XmlRpcMember("PORTBAUND")]
-        public int portBaund;
+        [XmlRpcMember("PORTBAUD")]
+        public int portBaud;
 
         [XmlRpcMember("RPCSTATEPORT")]
         public string rpcStatePort;
@@ -387,7 +387,7 @@ namespace RpcApp.Domain.Structures
         public string methodNameForAnswer;
 
         [XmlRpcMember("TableList")]
-        public XmlRpcStruct[] TableList;
+        public List<XmlRpcStruct> TableList;
     }
 
 }
