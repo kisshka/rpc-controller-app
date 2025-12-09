@@ -3,50 +3,36 @@
 @using AntDesign.TableModels
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore
+@using RpcApp.Domain
 @using RpcControllerClient.Models
 @using System.Text
+@using System.Globalization;
 @inject ModalService ModalService;
 @inject RpcClientContext RpcClientContext;
+@inject Notifications notification;
+@inject ConfirmService ComfirmService;
 
 
 <PageTitle>Home</PageTitle>
-
 <div>
+    @if (alert != null)
+    {
+        @alert
+    }
     @{
-        byte[] testData2 = Convert.FromHexString("01A4DABFDC0000");
-
-        byte crc2 = CRC8.Calculate(testData2);
-        Console.WriteLine($"CRC-8: 0x{crc2:X2} ({crc2})");
+        HexToByteArray("F70000DCBFDAA401");
     }
     <div class="table">
-        <Tabs>
+        <Tabs OnTabClick="OnTabClick">
             <TabPane Tab="Устройства" >
-                <Space Direction="SpaceDirection.Horizontal">
-                    <SpaceItem>
-                        <Search Placeholder="Введите название устройства" EnterButton="true" OnSearch="OnDeviceSearch" @bind-Value="@_deviceSearchString" />
-                    </SpaceItem>
-                </Space>
-                <Table @ref="_devicesTable" TItem="Devices" PageSize="5" Total="_devicesTotal" DataSource="_devicesDataSource" OnChange="OnDevicesChange">
-                    <PropertyColumn Property="c => c.DevicesId"></PropertyColumn>
-                    <PropertyColumn Property="c => c.DeviceName"></PropertyColumn>
-                    <PropertyColumn Property="c => c.DeviceStatus">
-                        @{
-                            var color = TagColor.Red;
-                            if (context.DeviceStatus)
-                            {
-                                color = TagColor.Green;
-                            }
-                        }
-                        <Tag Color="@color"></Tag>
-                    </PropertyColumn>
-                </Table>
+                <DeviceTab @ref="_deviceTab"/>
             </TabPane>
             <TabPane Tab="Ученики">
                 <Space Direction="SpaceDirection.Horizontal">
                     <SpaceItem>
                         <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" />
                     </SpaceItem>
-                    <Button Type="ButtonType.Primary" OnClick="ShowModalWithService">
+                    <Button Type="ButtonType.Primary" OnClick="PupilCreateModal">
                         Добавить ученика
                     </Button>
                     <Modal Title="Добавление ученика" @bind-Visible="@_visibleModal" OnOk="HandleOk" OnCancel="HandleCancel">
@@ -63,47 +49,14 @@
                             <p>@context.CardValidityPeriod.ToString("dd.MM.yyyy")</p>
                         }
                     </PropertyColumn>
+                    <ActionColumn Title="Изменить/Удалить">
+                        <a class="btn btn-primary" @onclick="() => EditPupil(context)">Изменить</a>
+                        <a class="btn btn-danger" @onclick="() => DeletePupil(context)">Удалить</a>
+                    </ActionColumn>
                 </Table>
             </TabPane>
-            <TabPane Tab="Посещения">
-                <Space Direction="SpaceDirection.Horizontal">
-                    <SpaceItem>
-                        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true"/>
-                    </SpaceItem>
-                </Space>
-                <Table @ref="_visitingsTable" TItem="Visiting" PageSize="5" Total="_visitingsTotal" DataSource="_visitingsDataSource" OnChange="OnVisitingsChange">
-                    <PropertyColumn Property="c => c.VisitingId"></PropertyColumn>
-                    <PropertyColumn Property="c => c.VisitingDateTime">
-                        @{
-                            <p>@context.VisitingDateTime.ToString("dd.MM.yyyy")</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Title="Время посещения" Property="c => c.VisitingDateTime">
-                        @{
-                            <p>@context.VisitingDateTime.ToString("HH:ss")</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Title="Ф.И.О." Property="c => c.Pupils">
-                        @{
-                            foreach(var p in context.Pupils)
-                            {
-
-                                <p>@GetShortName(p)</p>
-                            }
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Property="c => c.Direction">
-                        @{
-                            var direct = "Выход";
-                            if (context.Direction)
-                            {
-                                direct = "Вход";
-                            }
-                            <p>@direct</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Property="c => c.Devices.DevicesId"></PropertyColumn>
-                </Table>
+            <TabPane Tab="Посещения" Key="visitings">
+                <VisitingsTab @ref="_visitingsTab" />
             </TabPane>
         </Tabs>
     </div>
@@ -112,71 +65,21 @@
 @code {
 
     //Таблицы
-    ITable _devicesTable;
     ITable _pupilsTable;
-    ITable _visitingsTable;
+
 
     // Данные для таблиц
-    List<Devices> _devicesDataSource = new();
+
     List<Pupils> _pupilsDataSource = new();
-    List<Visiting> _visitingsDataSource = new();
+
 
     // Общее количество записей
-    int _devicesTotal;
+
     int _pupilsTotal;
-    int _visitingsTotal;
 
-    private string _deviceSearchString = "";
 
-    private QueryModel<Devices> _currentDevicesQuery;
-
-    #region Devices
-    async Task OnDevicesChange(QueryModel<Devices> query)
-    {
-        _currentDevicesQuery = query;
-        await LoadDevicesData(query);
-    }
-
-    private async Task LoadDevicesData(QueryModel<Devices> query = null)
-    {
-        var queryable = RpcClientContext.Devices.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(_deviceSearchString))
-        {
-            queryable = queryable.Where(d => d.DeviceName.Contains(_deviceSearchString));
-        }
-
-        _devicesTotal = await queryable.CountAsync();
-
-        if (query != null)
-        {
-            _devicesDataSource = await queryable
-                .ExecuteTableQuery(query)
-                .CurrentPagedRecords(query)
-                .ToListAsync();
-        }
-        else
-        {
-            _devicesDataSource = await queryable
-                .Take(5)
-                .ToListAsync();
-        }
-    }
-
-    public async Task OnDeviceSearch()
-    {
-        if (_currentDevicesQuery != null)
-        {
-            await LoadDevicesData(_currentDevicesQuery);
-        }
-        else
-        {
-            await LoadDevicesData();
-        }
-
-        StateHasChanged();
-    }
-    #endregion
+    private DeviceTab _deviceTab;
+    private VisitingsTab _visitingsTab;
 
     #region Pupils
     async Task OnPupilsChange(QueryModel<Pupils> query)
@@ -192,32 +95,51 @@
     }
     #endregion
 
-    #region Visitings
-    async Task OnVisitingsChange(QueryModel<Visiting> query)
-    {
-        var queryable = RpcClientContext.Visitings
-        .Include(v => v.Devices)
-        .Include(v => v.Pupils)
-        .AsQueryable();
-
-        _visitingsTotal = queryable.Count();
-        _visitingsDataSource = await queryable
-            .ExecuteTableQuery(query)
-            .CurrentPagedRecords(query)
-            .ToListAsync();
-    }
-    #endregion
-
     #region InitializeData
-    protected override async Task OnInitializedAsync()
+
+    private RenderFragment? alert;
+
+    private bool _initialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadInitialData();
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+
+            alert = null;
+            RequestSender requestSender = new RequestSender();
+
+            try
+            {
+                var guid = requestSender.SetSubscribe();
+                requestSender.SetConfigurationHwSrv(guid);
+                alert = AlertSuccess();
+            }
+            catch (Exception e)
+            {
+                alert = AlertError();
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                await LoadInitialData();
+                StateHasChanged();
+            }
+        }
     }
 
+    private async Task OnTabClick(string key)
+    {
+        if (key == "visitings" && _visitingsTab != null)
+        {
+            await _visitingsTab.LoadVisitingsData();
+        }
+    }
 
     private async Task LoadInitialData()
     {
-        await LoadDevicesData();
+        await _deviceTab.LoadDevicesData();
 
 
         _pupilsDataSource = await RpcClientContext.Pupils
@@ -225,13 +147,7 @@
             .ToListAsync();
         _pupilsTotal = await RpcClientContext.Pupils.CountAsync();
 
-
-        _visitingsDataSource = await RpcClientContext.Visitings
-            .Include(v => v.Devices)
-            .Include(v => v.Pupils)
-            .Take(5)
-            .ToListAsync();
-        _visitingsTotal = await RpcClientContext.Visitings.CountAsync();
+        // await _visitingsTab.LoadVisitingsData();
 
         StateHasChanged();
     }
@@ -243,7 +159,7 @@
     #endregion
 
     #region ShortAndSearchMethods
-    private string GetShortName(Pupils pupil)
+    public string GetShortName(Pupils pupil)
     {
         if (pupil == null) return "Неизвестно";
 
@@ -260,9 +176,9 @@
 
     bool _visibleModal = false;
 
-    AntDesign.Input<string> _inputCardNumber;
+    Input<string> _inputCardNumber;
 
-    Pupils pupils = new Pupils();
+    Pupils pupil = new Pupils();
 
     private List<string> ClassNumber = new List<string>() { "1А", "1Б", "1В", "1Г",
                                                             "2А", "2Б", "2В", "2Г",
@@ -281,11 +197,9 @@
     /// on modal OK button is click, submit form manually
     /// </summary>
     /// <param name="e"></param>
-    private async Task HandleOk(MouseEventArgs e)
+    private void HandleOk(MouseEventArgs e)
     {
         _submitting = true;
-        await Task.Delay(1000);
-        _form.Submit();
     }
     private void HandleCancel(MouseEventArgs e)
     {
@@ -301,8 +215,9 @@
         _visibleModal = false;
         _form.Reset();
     }
-    private void ShowModalWithService()
+    private void PupilCreateModal()
     {
+        pupil.CardNumber = "";
         ModalRef modalRef = default;
         modalRef = ModalService.CreateModal(new()
         {
@@ -310,18 +225,31 @@
             OnOk = async e =>
             {
                 modalRef?.SetConfirmLoading(true);
-                await Task.Delay(1000);
                 if (!_form.Validate())
                 {
                     modalRef?.SetConfirmLoading(false);
                     return;
                 }
 
+                Pupils newPupil = new Pupils()
+                {
+                    SurnamePupil = pupil.SurnamePupil,
+                    NamePupil = pupil.NamePupil,
+                    PatronymicPupil = pupil.PatronymicPupil,
+                    ClassNumber = pupil.ClassNumber,
+                    CardNumber = pupil.CardNumber,
+                    CardValidityPeriod = pupil.CardValidityPeriod
+                };
+                RpcClientContext.Pupils.Add(newPupil);
+                RpcClientContext.SaveChanges();
+
                 _form.Submit();
 
                 await modalRef.CloseAsync();
-
                 _form.Reset();
+
+                _pupilsTable.ReloadData();
+                StateHasChanged();
             },
             OnCancel = async e =>
             {
@@ -334,16 +262,13 @@
         });
     }
 
-
-    async Task ReadingCard()
-    {
-        await _inputCardNumber.Focus(FocusBehavior.FocusAtFirst);
-    }
-
+    private string HEX = "HEX";
+    private string DEX = "DEX";
+    private string _encoding = "HEX";
     RenderFragment FormTemplate()
     {
         return
-        @<Form Model="@pupils" OnFinish="OnFinish" @ref="@_form">
+        @<Form Model="@pupil" OnFinish="OnFinish" @ref="@_form">
             <FormItem Label="Фамилия">
                 <Input Placeholder="Введите фамилию ученика" @bind-Value="@context.SurnamePupil" />
             </FormItem>
@@ -351,14 +276,21 @@
                 <Input Placeholder="Введите имя ученика" @bind-Value="@context.NamePupil" />
             </FormItem>
             <FormItem Label="Отчество">
-                <Input Placeholder="Введите отчество ученика" @bind-Value="@context.PatronymicPupil"/>
+                <Input Placeholder="Введите отчество ученика" @bind-Value="@context.PatronymicPupil" />
             </FormItem>
             <FormItem Label="Номер класса">
                 <AutoComplete Placeholder="Введите класс ученика" @bind-Value="@context.ClassNumber" AllowFilter Options="@ClassNumber" FilterExpression="@((option, value) => option.Label.Contains(value ?? "", StringComparison.InvariantCultureIgnoreCase))" />
             </FormItem>
+            <FormItem>
+                Выберите формат считывания карты:
+                <br />
+                <RadioGroup @bind-Value="@_encoding">
+                    <Radio Value="HEX">HEX</Radio>
+                    <Radio Value="DEX">DEX</Radio>
+                </RadioGroup>
+            </FormItem>
             <FormItem Label="Номер карты">
-                <Input Placeholder="Считайте карту" @ref="@_inputCardNumber" @bind-Value="@context.CardNumber"
-                       CultureInfo="System.Globalization.CultureInfo.CurrentCulture" DebounceMilliseconds="0" OnInput="@OnCardNumberInput" />
+                <Input Placeholder="Считайте карту" ReadOnly @ref="@_inputCardNumber" @bind-Value="@context.CardNumber" />
                 <Button OnClick="ReadingCard" Type="ButtonType.Primary">Считать карту</Button>
             </FormItem>
             <FormItem Label="Период работы карты">
@@ -368,15 +300,258 @@
     ;
     }
 
-    private void OnCardNumberInput(ChangeEventArgs e)
+    private ModalRef _cardReadingModalRef;
+    private bool _isReadingCard = false;
+    private string _scannedCardNumber = "";
+
+    private void ReadingCard()
     {
-        var inputValue = e.Value?.ToString() ?? "";
-        int i = inputValue.Length;
-        Console.WriteLine(inputValue.Length);
+        _isReadingCard = true;
+
+        _cardReadingModalRef = ModalService.CreateModal(new ModalOptions
+        {
+            Title = "Считывание карты",
+            Content = CardReadingTemplate(),
+            Width = 400,
+            Closable = true,
+            MaskClosable = true,
+            DestroyOnClose = true,
+            Footer = null,
+            OnCancel = async e =>
+            {
+                _isReadingCard = false;
+                await _cardReadingModalRef.CloseAsync();
+            }
+        });
+        _ = StartCardReadingMonitor();
     }
 
+    private void CardNumberFormating()
+    {
+        string cardNumber = pupil.CardNumber;
+        int i = cardNumber.Length;
+        if (i < 12)
+        {
+            cardNumber = cardNumber.PadLeft(12, '0');
+        }
+        cardNumber = cardNumber + "01";
+        string reversed = ReverseByPairs(cardNumber);
+        byte[] byteArray = Convert.FromHexString(reversed);
+        byte crcData = CRC8.Calculate(byteArray);
+        pupil.CardNumber = $"{crcData:X2}" + cardNumber;
+    }
 
+    private int[] HexToByteArray(string hexStr)
+    {
+        byte[] byteArray = Convert.FromHexString(hexStr);
+        int[] BytesInDexArray = new int[byteArray.Length];
+        foreach (byte b in byteArray)
+        {
+            int i = 0;
+            BytesInDexArray[i] = b;
+            i++;
+        }
+        BytesInDexArray = BytesInDexArray.Reverse().ToArray();
+        return BytesInDexArray;
+    }
 
+    private async Task StartCardReadingMonitor()
+    {
+        string previousValue = "";
+        int unchangedCount = 0;
 
+        while (_isReadingCard)
+        {
+            await Task.Delay(100);
+
+            if (_scannedCardNumber != previousValue)
+            {
+                previousValue = _scannedCardNumber;
+                unchangedCount = 0;
+            }
+            else if (!string.IsNullOrEmpty(_scannedCardNumber))
+            {
+                unchangedCount++;
+                if (unchangedCount >= 3)
+                {
+                    if (_encoding == DEX)
+                    {
+                        pupil.CardNumber = _scannedCardNumber;
+                        await CloseReadingCardModal();
+                    }
+                    else
+                    {
+                        pupil.CardNumber = _scannedCardNumber;
+                        CardNumberFormating();
+                        await CloseReadingCardModal();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private async Task CloseReadingCardModal()
+    {
+        await Task.Delay(200);
+        _isReadingCard = false;
+        await _cardReadingModalRef.CloseAsync();
+        if (_inputCardNumber == null)
+            await _inputCardNumberEdit.Focus(FocusBehavior.FocusAtFirst);
+        else
+            await _inputCardNumber.Focus(FocusBehavior.FocusAtFirst);
+    }
+
+    RenderFragment CardReadingTemplate()
+    {
+        _scannedCardNumber = "";
+        return
+        @<div>
+            <p>Поднесите карту к считывателю...</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <Icon Type="credit-card" Style="font-size: 48px; color: #1890ff;" />
+            </div>
+            <Alert Message="Ожидание карты..." Type="AlertType.Info" />
+
+            <div>
+                <Input @bind-Value="@_scannedCardNumber" AutoFocus="true" />
+            </div>
+        </div>
+        ;
+    }
     #endregion
+    private string ReverseByPairs(string input)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = input.Length - 2; i >= 0; i -= 2)
+        {
+            sb.Append(input[i]);
+            sb.Append(input[i + 1]);
+        }
+        return sb.ToString();
+    }
+    #region DeletePupil
+    async Task DeletePupil(Pupils delPupil)
+    {
+        if (!await Comfirm($"Вы уверены что хотите удалить данную запись?"))
+            return;
+
+        var entity = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == delPupil.PupilsId);
+        if (entity != null)
+        {
+            RpcClientContext.Pupils.Remove(entity);
+            await RpcClientContext.SaveChangesAsync();
+        }
+        _pupilsDataSource = _pupilsDataSource
+            .Where(p => p.PupilsId != delPupil.PupilsId) 
+            .ToList();
+        _pupilsTotal = _pupilsDataSource.Count;
+        StateHasChanged();
+        _pupilsTable.ReloadData();
+    }
+
+    private async Task<bool> Comfirm(string message)
+    {
+        return await ComfirmService.Show(message, "Confirm", ConfirmButtons.YesNo, ConfirmIcon.Warning) == ConfirmResult.Yes;
+    }
+    #endregion
+
+    #region EditPupil
+    private Input<string> _inputCardNumberEdit;
+    ModalRef<bool> editModelRef = default;
+    IForm editPupilForm = default;
+
+    void EditPupil(Pupils editPupil)
+    {
+        editModelRef = ModalService.CreateModal<bool>(new()
+        {
+            Title = "Редактирование ученика",
+            Content = EditFormTemplate(editPupil),
+            OnOk = async (e) =>
+            {
+                if (!editPupilForm.Validate())
+                {
+                    return;
+                }
+
+                var entity = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == editPupil.PupilsId);
+                if (entity != null)
+                {
+                    entity.SurnamePupil = editPupil.SurnamePupil;
+                    entity.NamePupil = editPupil.NamePupil;
+                    entity.PatronymicPupil = editPupil.PatronymicPupil;
+                    entity.ClassNumber = editPupil.ClassNumber;
+                    entity.CardNumber = editPupil.CardNumber;
+                    entity.CardValidityPeriod = editPupil.CardValidityPeriod;
+                    await RpcClientContext.SaveChangesAsync();
+                    editModelRef.SetConfirmLoading(true);
+                    var index = _pupilsDataSource.FindIndex(x => x.PupilsId == editPupil.PupilsId);
+                    _pupilsDataSource[index] = entity;
+                }
+
+                await Task.Delay(1000);
+                await editModelRef.CloseAsync();
+                _pupilsTable.ReloadData();
+                StateHasChanged();
+            },
+            OnCancel = async (e) =>
+            {
+                if (editPupilForm.IsModified && (!await Comfirm("Данные которые вы изменили не будут сохранены. Вы уверены что хотите выйти?")))
+                {
+                    return;
+                }
+                await editModelRef.CloseAsync();
+            }
+        });
+    }
+
+    private RenderFragment EditFormTemplate(Pupils editPupil)
+    {
+        return @<Form @ref="editPupilForm" Model="editPupil" OnFinish="() => editModelRef.OkAsync(true)">
+            <FormItem Label="Фамилия">
+                <Input Placeholder="Введите фамилию ученика" @bind-Value="@context.SurnamePupil" />
+            </FormItem>
+            <FormItem Label="Имя">
+                <Input Placeholder="Введите имя ученика" @bind-Value="@context.NamePupil" />
+            </FormItem>
+            <FormItem Label="Отчество">
+                <Input Placeholder="Введите отчество ученика" @bind-Value="@context.PatronymicPupil" />
+            </FormItem>
+            <FormItem Label="Номер класса">
+                <AutoComplete Placeholder="Введите класс ученика" @bind-Value="@context.ClassNumber"
+                              AllowFilter Options="@ClassNumber"
+                              FilterExpression="@((option, value) => option.Label.Contains(value ?? "", StringComparison.InvariantCultureIgnoreCase))" />
+            </FormItem>
+            <FormItem>
+                Выберите формат считывания карты:
+                <br />
+                <RadioGroup @bind-Value="@_encoding">
+                    <Radio Value="HEX">HEX</Radio>
+                    <Radio Value="DEX">DEX</Radio>
+                </RadioGroup>
+            </FormItem>
+            <FormItem Label="Номер карты">
+                <Input Placeholder="Считайте карту" ReadOnly @ref="@_inputCardNumberEdit" @bind-Value="@context.CardNumber" />
+                <Button OnClick="@(() => ReadingCard())" Type="ButtonType.Primary">
+                    Считать карту
+                </Button>
+            </FormItem>
+            <FormItem Label="Период работы карты">
+                <DatePicker @bind-Value="@context.CardValidityPeriod" />
+            </FormItem>
+        </Form>;
+    }
+    #endregion
+    RenderFragment AlertError()
+    {
+        return
+        @<Alert Type="AlertType.Error" Closable Message="Ошибка" Description="Ошибка подключения к серверу. Убедитесь, что CoreOrion подключён." ShowIcon="true"></Alert>
+        ;
+    }
+    RenderFragment AlertSuccess()
+    {
+        return
+        @<Alert Type="AlertType.Success" Closable Message="Успех" Description="Вы успешно вошли в приложение" ShowIcon="true"></Alert>
+        ;
+    }
 }

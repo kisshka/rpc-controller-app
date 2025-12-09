@@ -1,0 +1,84 @@
+﻿@rendermode InteractiveServer
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore
+@using RpcControllerClient.Models
+@inject RpcClientContext RpcClientContext;
+
+<Space Direction="SpaceDirection.Horizontal">
+    <SpaceItem>
+        <Search Placeholder="Введите название устройства" EnterButton="true" OnSearch="OnDeviceSearch" @bind-Value="@_deviceSearchString" />
+    </SpaceItem>
+</Space>
+<Table @ref="_devicesTable" TItem="Devices" PageSize="5" Total="_devicesTotal" DataSource="_devicesDataSource" OnChange="OnDevicesChange">
+    <PropertyColumn Property="c => c.DevicesId"></PropertyColumn>
+    <PropertyColumn Property="c => c.DeviceName"></PropertyColumn>
+    <PropertyColumn Property="c => c.DeviceStatus">
+        @{
+            var color = TagColor.Red;
+            if (context.DeviceStatus)
+            {
+                color = TagColor.Green;
+            }
+        }
+        <Tag Color="@color"></Tag>
+    </PropertyColumn>
+</Table>
+
+@code {
+    ITable _devicesTable;
+
+    List<Devices> _devicesDataSource = new();
+
+    int _devicesTotal;
+
+    private string _deviceSearchString = "";
+
+    private QueryModel<Devices> _currentDevicesQuery;
+
+    async Task OnDevicesChange(QueryModel<Devices> query)
+    {
+        _currentDevicesQuery = query;
+        await LoadDevicesData(query);
+    }
+
+    public async Task LoadDevicesData(QueryModel<Devices> query = null)
+    {
+        var queryable = RpcClientContext.Devices.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(_deviceSearchString))
+        {
+            queryable = queryable.Where(d => d.DeviceName.Contains(_deviceSearchString));
+        }
+
+        _devicesTotal = await queryable.CountAsync();
+
+        if (query != null)
+        {
+            _devicesDataSource = await queryable
+                .ExecuteTableQuery(query)
+                .CurrentPagedRecords(query)
+                .ToListAsync();
+        }
+        else
+        {
+            _devicesDataSource = await queryable
+                .Take(5)
+                .ToListAsync();
+        }
+    }
+
+    public async Task OnDeviceSearch()
+    {
+        if (_currentDevicesQuery != null)
+        {
+            await LoadDevicesData(_currentDevicesQuery);
+        }
+        else
+        {
+            await LoadDevicesData();
+        }
+
+        StateHasChanged();
+    }
+}

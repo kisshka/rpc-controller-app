@@ -62,7 +62,8 @@
               "RelativeToolTip": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\DeviceTab.razor",
               "ViewState": "AgIAAC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-09T09:05:10.727Z"
+              "WhenOpened": "2025-12-09T09:05:10.727Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -87,7 +88,8 @@
               "RelativeToolTip": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
               "ViewState": "AgIAAHQAAAAAAAAAAAAswIYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-04T09:03:12.549Z"
+              "WhenOpened": "2025-12-04T09:03:12.549Z",
+              "EditorCaption": ""
             }
           ]
         }

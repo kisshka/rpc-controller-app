@@ -1,6 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using RpcControllerClient.Components;
 using RpcControllerClient.Models;
+using System.Text;
+
+
+//Необходимо для того чтобы не было ошибки с кодировкой
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,7 @@ builder.Services.AddDbContext<RpcClientContext>(options => options.UseSqlite(con
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddAntDesign();
+builder.Services.AddScoped<Notifications>();
 
 var app = builder.Build();
 
