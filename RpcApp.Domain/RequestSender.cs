@@ -45,8 +45,8 @@ namespace RpcApp.Domain
         [XmlRpcMethod("GETLISTMETHODS")]
         void GetListMethods(GetListMethodsParams p);
 
-        [XmlRpcMethod("RefreshTablesData")]
-        void RefreshTablesData(RefreshTablesDataParams p);
+        [XmlRpcMethod("REFRESHTABLESDATA")]
+        public void RefreshTablesData(XmlRpcStruct p);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace RpcApp.Domain
                 };
 
                 Console.WriteLine("Отправляем запрос SetSubscribe...");
-                var response = _rpcClient.SetSubscribe(subscribeParams) ??  throw new Exception("Пустой ответ от сервера");
+                var response = _rpcClient.SetSubscribe(subscribeParams) ?? throw new Exception("Пустой ответ от сервера");
 
                 string result = (string)response["RESULT"];
                 Console.WriteLine($"Результат: {result}");
@@ -201,7 +201,7 @@ namespace RpcApp.Domain
                         typeProtocol = 1,
                         typeConverter = 2,
                         portPriority = 0,
-                        portBaund = 9600,
+                        portBaud = 9600,
                         rpcStatePort = "OPEN",
                         loopState = "ACTIVE"
                     }
@@ -209,15 +209,15 @@ namespace RpcApp.Domain
                     devices = [
                       new Device ()
                         {
-                         address = address, 
+                         address = address,
                          rpcStatusDevice = "ON",
                          type = 16,
-                        priorityDevice = 3,
+                        priorityDevice = 0,
                         version = 220,
     }
-                    
+
                     ]
- 
+
                 };
 
 
@@ -250,7 +250,7 @@ namespace RpcApp.Domain
         /// </summary>
         /// <exception cref="Exception"></exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
-        public void GetDevice (string guid)
+        public void GetDevice(string guid)
         {
             try
             {
@@ -283,7 +283,7 @@ namespace RpcApp.Domain
 
                 if (result == "METHOD IS EXECUTE")
                 {
-                        Console.WriteLine($"Информация об устройстве получена");
+                    Console.WriteLine($"Информация об устройстве получена");
                 }
             }
             catch (XmlRpcFaultException ex)
@@ -303,15 +303,15 @@ namespace RpcApp.Domain
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void GetDeviceListAsync()
         {
-                GetDeviceListAsyncParams getDeviceListAsyncParams = new()
-                {
-                    ipServer = "127.0.0.1",
-                    portserver = 8095,
-                    methodNameForAnswer = "GetDeviceListAsyncResult"
-                };
+            GetDeviceListAsyncParams getDeviceListAsyncParams = new()
+            {
+                ipServer = "127.0.0.1",
+                portserver = 8095,
+                methodNameForAnswer = "GetDeviceListAsyncResult"
+            };
 
-                Console.WriteLine("Отправляем запрос GetDeviceListAsync...");
-                _ = _rpcClient.GetDeviceListAsync(getDeviceListAsyncParams);
+            Console.WriteLine("Отправляем запрос GetDeviceListAsync...");
+            _ = _rpcClient.GetDeviceListAsync(getDeviceListAsyncParams);
         }
 
         /// <summary>
@@ -384,13 +384,13 @@ namespace RpcApp.Domain
                 autoWriting = 1,
                 rewriteDeleted = 0,
                 rewriteBlocked = 0
-    };
+            };
 
             Console.WriteLine("Отправляем запрос SynchronizeOneKey...");
             _ = _rpcClient.SynchronizeOneKey(synchronizeOneKeyParams);
         }
 
-        public void ReadKeyCodeFromReader (string guid)
+        public void ReadKeyCodeFromReader(string guid)
         {
             ReadKeyCodeFromReaderParams keyCodeFromReaderParams = new()
             {
@@ -409,7 +409,7 @@ namespace RpcApp.Domain
             _ = _rpcClient.ReadKeyCodeFromReader(keyCodeFromReaderParams);
         }
 
-        public void GetPasswordListWithStatus (string guid)
+        public void GetPasswordListWithStatus(string guid)
         {
             GetPasswordListWithStatusParams passwordListParams = new()
             {
@@ -470,20 +470,25 @@ namespace RpcApp.Domain
             _rpcClient.GetListMethods(methodsParams);
         }
 
-
-        public void RefreshTablesData(string guid, XmlRpcStruct[] tableList)
-        {   
-            RefreshTablesDataParams refreshTablesDataParams = new()
+        public void RefreshTablesData(string guid, XmlRpcStruct[] tableArray)
+        {
+            // Создаем параметры
+            XmlRpcStruct parameters = new XmlRpcStruct
             {
-                guid = guid,
-                ipServer = "127.0.0.1",
-                portServer = 8095,
-                methodNameForAnswer = "GetConfiguration",
-                TableList = tableList
+                ["GUID"] = guid,
+                ["MethodNameForAnswer"] = "RefreshTablesResult",
+                ["TableList"] = tableArray,
+                ["IPSERVER"] = "127.0.0.1",
+                ["PORTSERVER"] = 8095
             };
 
-            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
-            _rpcClient.RefreshTablesData(refreshTablesDataParams);
+            Console.WriteLine("Отправляем запрос RefreshTablesData...");
+
+            // Логируем структуру
+            Console.WriteLine($"GUID: {guid}");
+            Console.WriteLine($"Таблиц: {tableArray.Length}");
+
+            _rpcClient.RefreshTablesData(parameters);
         }
 
     }
