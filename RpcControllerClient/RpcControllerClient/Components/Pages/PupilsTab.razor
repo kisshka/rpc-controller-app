@@ -36,8 +36,12 @@
     </ActionColumn>
 </Table>
 @code {
-    //Ссылка на компонент Home
-    Home _home = new Home();
+
+    [Parameter]
+    public Home HomeComponent { get; set; }
+
+    [Parameter]
+    public string Guid { get; set; }
 
     ITable _pupilsTable;
     List<Pupils> _pupilsDataSource = new();
@@ -142,7 +146,7 @@
                 _pupilsTable.ReloadData();
                 StateHasChanged();
                 DateTime dateTime = DateTime.Now;
-                _home.tablesManager.AddPersonWithPassword(_home.guid, newPupil.PupilsId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilsId, 4, 128, newPupil.PupilsId,
+                HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilsId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilsId, 4, 128, newPupil.PupilsId,
                         3, dateTime.ToString(), newPupil.CardValidityPeriod.ToString(), HexToByteArray(newPupil.CardNumber));
             },
             OnCancel = async e =>
