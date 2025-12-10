@@ -58,11 +58,11 @@
                 requestSender.SetConfigurationHwSrv(guid);
                 tablesManager.SendBaseConfiguration(guid);
                 DateTime dateTime = DateTime.Now;
-                foreach (var pupil in RpcClientContext.Pupils)
-                {
-                    tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId, 
-                        3, dateTime.ToString(), pupil.CardValidityPeriod.ToString(), _pupilsTab.HexToByteArray(pupil.CardNumber));
-                }
+                // foreach (var pupil in RpcClientContext.Pupils)
+                // {
+                //     tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId, 
+                //         3, dateTime.ToString(), pupil.CardValidityPeriod.ToString(), _pupilsTab.HexToByteArray(pupil.CardNumber));
+                // }
                 alert = AlertSuccess();
             }
             catch (Exception e)

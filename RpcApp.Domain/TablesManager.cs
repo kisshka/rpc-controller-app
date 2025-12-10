@@ -62,6 +62,8 @@ namespace RpcApp.Domain
 
 
         /// <summary> Метод для добавления сотрудника и его пароля в устройство</summary>
+        /// <param name="guid"></param>
+        /// <param name="personId"></param>
         /// <example>
         /// Пример валидных данных для отправки запроса
         /// <code>
@@ -83,12 +85,6 @@ namespace RpcApp.Domain
             tables.Add(CreateTable("Passwords", 0, [password]));
 
             client.RefreshTablesData(guid, tables.ToArray());
-        }
-
-
-        public void UpdatePerson()
-        {
-
         }
 
         /// <summary>Метод для удаления сотруника и его пароля из устройства</summary>
