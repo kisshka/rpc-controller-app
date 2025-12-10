@@ -21,8 +21,8 @@ namespace RpcControllerClient.Models
 
         public int DevicesId { get; set; }
         [ForeignKey(nameof(DevicesId))]
-        public Devices? Devices { get; set; }
+        public Devices Devices { get; set; }
 
-        public List<Pupils>? Pupils { get; set; } 
+        public List<Pupils> Pupils { get; set; } 
     }
 }
