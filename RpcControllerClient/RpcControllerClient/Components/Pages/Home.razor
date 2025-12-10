@@ -3,235 +3,96 @@
 @using AntDesign.TableModels
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore
+@using RpcApp.Domain
 @using RpcControllerClient.Models
-@using System.Text
-@inject ModalService ModalService;
 @inject RpcClientContext RpcClientContext;
 
 
 <PageTitle>Home</PageTitle>
-
 <div>
-    @{
-        byte[] testData2 = Convert.FromHexString("01A4DABFDC0000");
-
-        byte crc2 = CRC8.Calculate(testData2);
-        Console.WriteLine($"CRC-8: 0x{crc2:X2} ({crc2})");
+    @if (alert != null)
+    {
+        @alert
     }
     <div class="table">
-        <Tabs>
+        <Tabs OnTabClick="OnTabClick">
             <TabPane Tab="Устройства" >
-                <Space Direction="SpaceDirection.Horizontal">
-                    <SpaceItem>
-                        <Search Placeholder="Введите название устройства" EnterButton="true" OnSearch="OnDeviceSearch" @bind-Value="@_deviceSearchString" />
-                    </SpaceItem>
-                </Space>
-                <Table @ref="_devicesTable" TItem="Devices" PageSize="5" Total="_devicesTotal" DataSource="_devicesDataSource" OnChange="OnDevicesChange">
-                    <PropertyColumn Property="c => c.DevicesId"></PropertyColumn>
-                    <PropertyColumn Property="c => c.DeviceName"></PropertyColumn>
-                    <PropertyColumn Property="c => c.DeviceStatus">
-                        @{
-                            var color = TagColor.Red;
-                            if (context.DeviceStatus)
-                            {
-                                color = TagColor.Green;
-                            }
-                        }
-                        <Tag Color="@color"></Tag>
-                    </PropertyColumn>
-                </Table>
+                <DeviceTab @ref="_deviceTab"/>
             </TabPane>
             <TabPane Tab="Ученики">
-                <Space Direction="SpaceDirection.Horizontal">
-                    <SpaceItem>
-                        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" />
-                    </SpaceItem>
-                    <Button Type="ButtonType.Primary" OnClick="ShowModalWithService">
-                        Добавить ученика
-                    </Button>
-                    <Modal Title="Добавление ученика" @bind-Visible="@_visibleModal" OnOk="HandleOk" OnCancel="HandleCancel">
-                        @FormTemplate();
-                    </Modal>
-                </Space>
-                <Table @ref="_pupilsTable" TItem="Pupils" PageSize="5" Total="_pupilsTotal" DataSource="_pupilsDataSource" OnChange="OnPupilsChange">
-                    <PropertyColumn Property="c => c.SurnamePupil"></PropertyColumn>
-                    <PropertyColumn Property="c => c.NamePupil"></PropertyColumn>
-                    <PropertyColumn Property="c => c.PatronymicPupil"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CardNumber"></PropertyColumn>
-                    <PropertyColumn Property="c => c.CardValidityPeriod">
-                        @{
-                            <p>@context.CardValidityPeriod.ToString("dd.MM.yyyy")</p>
-                        }
-                    </PropertyColumn>
-                </Table>
+                <PupilsTab @ref="_pupilsTab" />
             </TabPane>
-            <TabPane Tab="Посещения">
-                <Space Direction="SpaceDirection.Horizontal">
-                    <SpaceItem>
-                        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true"/>
-                    </SpaceItem>
-                </Space>
-                <Table @ref="_visitingsTable" TItem="Visiting" PageSize="5" Total="_visitingsTotal" DataSource="_visitingsDataSource" OnChange="OnVisitingsChange">
-                    <PropertyColumn Property="c => c.VisitingId"></PropertyColumn>
-                    <PropertyColumn Property="c => c.VisitingDateTime">
-                        @{
-                            <p>@context.VisitingDateTime.ToString("dd.MM.yyyy")</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Title="Время посещения" Property="c => c.VisitingDateTime">
-                        @{
-                            <p>@context.VisitingDateTime.ToString("HH:ss")</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Title="Ф.И.О." Property="c => c.Pupils">
-                        @{
-                            foreach(var p in context.Pupils)
-                            {
-
-                                <p>@GetShortName(p)</p>
-                            }
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Property="c => c.Direction">
-                        @{
-                            var direct = "Выход";
-                            if (context.Direction)
-                            {
-                                direct = "Вход";
-                            }
-                            <p>@direct</p>
-                        }
-                    </PropertyColumn>
-                    <PropertyColumn Property="c => c.Devices.DevicesId"></PropertyColumn>
-                </Table>
+            <TabPane Tab="Посещения" Key="visitings">
+                <VisitingsTab @ref="_visitingsTab" />
             </TabPane>
         </Tabs>
     </div>
 </div>
 
 @code {
+    public string? guid;
+    public TablesManager tablesManager = new TablesManager();
 
-    //Таблицы
-    ITable _devicesTable;
-    ITable _pupilsTable;
-    ITable _visitingsTable;
 
-    // Данные для таблиц
-    List<Devices> _devicesDataSource = new();
-    List<Pupils> _pupilsDataSource = new();
-    List<Visiting> _visitingsDataSource = new();
-
-    // Общее количество записей
-    int _devicesTotal;
-    int _pupilsTotal;
-    int _visitingsTotal;
-
-    private string _deviceSearchString = "";
-
-    private QueryModel<Devices> _currentDevicesQuery;
-
-    #region Devices
-    async Task OnDevicesChange(QueryModel<Devices> query)
-    {
-        _currentDevicesQuery = query;
-        await LoadDevicesData(query);
-    }
-
-    private async Task LoadDevicesData(QueryModel<Devices> query = null)
-    {
-        var queryable = RpcClientContext.Devices.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(_deviceSearchString))
-        {
-            queryable = queryable.Where(d => d.DeviceName.Contains(_deviceSearchString));
-        }
-
-        _devicesTotal = await queryable.CountAsync();
-
-        if (query != null)
-        {
-            _devicesDataSource = await queryable
-                .ExecuteTableQuery(query)
-                .CurrentPagedRecords(query)
-                .ToListAsync();
-        }
-        else
-        {
-            _devicesDataSource = await queryable
-                .Take(5)
-                .ToListAsync();
-        }
-    }
-
-    public async Task OnDeviceSearch()
-    {
-        if (_currentDevicesQuery != null)
-        {
-            await LoadDevicesData(_currentDevicesQuery);
-        }
-        else
-        {
-            await LoadDevicesData();
-        }
-
-        StateHasChanged();
-    }
-    #endregion
-
-    #region Pupils
-    async Task OnPupilsChange(QueryModel<Pupils> query)
-    {
-        var queryable = RpcClientContext.Pupils
-        .AsQueryable();
-
-        _pupilsTotal = queryable.Count();
-        _pupilsDataSource = await queryable
-            .ExecuteTableQuery(query)
-            .CurrentPagedRecords(query)
-            .ToListAsync();
-    }
-    #endregion
-
-    #region Visitings
-    async Task OnVisitingsChange(QueryModel<Visiting> query)
-    {
-        var queryable = RpcClientContext.Visitings
-        .Include(v => v.Devices)
-        .Include(v => v.Pupils)
-        .AsQueryable();
-
-        _visitingsTotal = queryable.Count();
-        _visitingsDataSource = await queryable
-            .ExecuteTableQuery(query)
-            .CurrentPagedRecords(query)
-            .ToListAsync();
-    }
-    #endregion
+    private DeviceTab _deviceTab;
+    private VisitingsTab _visitingsTab;
+    private PupilsTab _pupilsTab;
 
     #region InitializeData
-    protected override async Task OnInitializedAsync()
+
+    private RenderFragment? alert;
+
+    private bool _initialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadInitialData();
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+
+            alert = null;
+            RequestSender requestSender = new RequestSender();
+            try
+            {
+                guid = requestSender.SetSubscribe();
+                requestSender.SetConfigurationHwSrv(guid);
+                tablesManager.SendBaseConfiguration(guid);
+                DateTime dateTime = DateTime.Now;
+                foreach (var pupil in RpcClientContext.Pupils)
+                {
+                    tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId, 
+                        3, dateTime.ToString(), pupil.CardValidityPeriod.ToString(), _pupilsTab.HexToByteArray(pupil.CardNumber));
+                }
+                alert = AlertSuccess();
+            }
+            catch (Exception e)
+            {
+                alert = AlertError();
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                await LoadInitialData();
+                StateHasChanged();
+            }
+        }
     }
 
+    private async Task OnTabClick(string key)
+    {
+        if (key == "visitings" && _visitingsTab != null)
+        {
+            await _visitingsTab.LoadVisitingsData();
+        }
+        if (key == "pupils" && _pupilsTab != null)
+        {
+            
+        }
+    }
 
     private async Task LoadInitialData()
     {
-        await LoadDevicesData();
-
-
-        _pupilsDataSource = await RpcClientContext.Pupils
-            .Take(5)
-            .ToListAsync();
-        _pupilsTotal = await RpcClientContext.Pupils.CountAsync();
-
-
-        _visitingsDataSource = await RpcClientContext.Visitings
-            .Include(v => v.Devices)
-            .Include(v => v.Pupils)
-            .Take(5)
-            .ToListAsync();
-        _visitingsTotal = await RpcClientContext.Visitings.CountAsync();
+        await _deviceTab.LoadDevicesData();
 
         StateHasChanged();
     }
@@ -243,7 +104,7 @@
     #endregion
 
     #region ShortAndSearchMethods
-    private string GetShortName(Pupils pupil)
+    public string GetShortName(Pupils pupil)
     {
         if (pupil == null) return "Неизвестно";
 
@@ -255,128 +116,16 @@
     }
     #endregion
 
-
-    #region CreateStudentInModal
-
-    bool _visibleModal = false;
-
-    AntDesign.Input<string> _inputCardNumber;
-
-    Pupils pupils = new Pupils();
-
-    private List<string> ClassNumber = new List<string>() { "1А", "1Б", "1В", "1Г",
-                                                            "2А", "2Б", "2В", "2Г",
-                                                            "3А", "3Б", "3В", "3Г",
-                                                            "4А", "4Б", "4В", "4Г",
-                                                            "5А", "5Б", "5В", "5Г",
-                                                            "6А", "6Б", "6В", "6Г",
-                                                            "7А", "7Б", "7В", "7Г",
-                                                            "8А", "8Б", "8В", "8Г",
-                                                            "9А", "9Б", "9В", "9Г",
-                                                            "10А", "10Б", "10В", "10Г",
-                                                            "11А", "11Б", "11В", "11Г"};
-    bool _submitting = false;
-    private Form<Pupils> _form;
-    /// <summary>
-    /// on modal OK button is click, submit form manually
-    /// </summary>
-    /// <param name="e"></param>
-    private async Task HandleOk(MouseEventArgs e)
-    {
-        _submitting = true;
-        await Task.Delay(1000);
-        _form.Submit();
-    }
-    private void HandleCancel(MouseEventArgs e)
-    {
-        Console.WriteLine(e);
-    }
-    /// <summary>
-    /// when form is submited, close the modal
-    /// </summary>
-    /// <param name="args"></param>
-    private void OnFinish(EditContext editContext)
-    {
-        _submitting = false;
-        _visibleModal = false;
-        _form.Reset();
-    }
-    private void ShowModalWithService()
-    {
-        ModalRef modalRef = default;
-        modalRef = ModalService.CreateModal(new()
-        {
-            Content = FormTemplate(),
-            OnOk = async e =>
-            {
-                modalRef?.SetConfirmLoading(true);
-                await Task.Delay(1000);
-                if (!_form.Validate())
-                {
-                    modalRef?.SetConfirmLoading(false);
-                    return;
-                }
-
-                _form.Submit();
-
-                await modalRef.CloseAsync();
-
-                _form.Reset();
-            },
-            OnCancel = async e =>
-            {
-                if (!_form.IsModified || await ModalService.ConfirmAsync(new() { Content = "При выходе форма очистится и вы потеряете заполненные данные." }))
-                {
-                    await modalRef.CloseAsync();
-                    _form.Reset();
-                }
-            },
-        });
-    }
-
-
-    async Task ReadingCard()
-    {
-        await _inputCardNumber.Focus(FocusBehavior.FocusAtFirst);
-    }
-
-    RenderFragment FormTemplate()
+    RenderFragment AlertError()
     {
         return
-        @<Form Model="@pupils" OnFinish="OnFinish" @ref="@_form">
-            <FormItem Label="Фамилия">
-                <Input Placeholder="Введите фамилию ученика" @bind-Value="@context.SurnamePupil" />
-            </FormItem>
-            <FormItem Label="Имя">
-                <Input Placeholder="Введите имя ученика" @bind-Value="@context.NamePupil" />
-            </FormItem>
-            <FormItem Label="Отчество">
-                <Input Placeholder="Введите отчество ученика" @bind-Value="@context.PatronymicPupil"/>
-            </FormItem>
-            <FormItem Label="Номер класса">
-                <AutoComplete Placeholder="Введите класс ученика" @bind-Value="@context.ClassNumber" AllowFilter Options="@ClassNumber" FilterExpression="@((option, value) => option.Label.Contains(value ?? "", StringComparison.InvariantCultureIgnoreCase))" />
-            </FormItem>
-            <FormItem Label="Номер карты">
-                <Input Placeholder="Считайте карту" @ref="@_inputCardNumber" @bind-Value="@context.CardNumber"
-                       CultureInfo="System.Globalization.CultureInfo.CurrentCulture" DebounceMilliseconds="0" OnInput="@OnCardNumberInput" />
-                <Button OnClick="ReadingCard" Type="ButtonType.Primary">Считать карту</Button>
-            </FormItem>
-            <FormItem Label="Период работы карты">
-                <DatePicker DefaultPickerValue="DateTime.Now" @bind-Value="@context.CardValidityPeriod" />
-            </FormItem>
-        </Form>
-    ;
+        @<Alert Type="AlertType.Error" Closable Message="Ошибка" Description="Ошибка подключения к серверу. Убедитесь, что CoreOrion подключён." ShowIcon="true"></Alert>
+        ;
     }
-
-    private void OnCardNumberInput(ChangeEventArgs e)
+    RenderFragment AlertSuccess()
     {
-        var inputValue = e.Value?.ToString() ?? "";
-        int i = inputValue.Length;
-        Console.WriteLine(inputValue.Length);
+        return
+        @<Alert Type="AlertType.Success" Closable Message="Успех" Description="Вы успешно вошли в приложение" ShowIcon="true"></Alert>
+        ;
     }
-
-
-
-
-    #endregion
 }

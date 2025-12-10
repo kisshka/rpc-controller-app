@@ -1,0 +1,87 @@
+﻿@rendermode InteractiveServer
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.EntityFrameworkCore
+@using RpcControllerClient.Models
+@inject RpcClientContext RpcClientContext;
+
+<Space Direction="SpaceDirection.Horizontal">
+    <SpaceItem>
+        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" />
+    </SpaceItem>
+</Space>
+<Table @ref="_visitingsTable" TItem="Visiting" PageSize="5" Total="_visitingsTotal" DataSource="_visitingsDataSource" OnChange="OnVisitingsChange">
+    <PropertyColumn Property="c => c.VisitingId"></PropertyColumn>
+    <PropertyColumn Property="c => c.VisitingDateTime">
+        @{
+            <p>@context.VisitingDateTime.ToString("dd.MM.yyyy")</p>
+        }
+    </PropertyColumn>
+    <PropertyColumn Title="Время посещения" Property="c => c.VisitingDateTime">
+        @{
+            <p>@context.VisitingDateTime.ToString("HH:ss")</p>
+        }
+    </PropertyColumn>
+    <PropertyColumn Title="Ф.И.О." Property="c => c.Pupils">
+        @{
+            foreach (var p in context.Pupils)
+            {
+
+                <p>@_home.GetShortName(p)</p>
+            }
+        }
+    </PropertyColumn>
+    <PropertyColumn Property="c => c.Direction">
+        @{
+            var direct = "Выход";
+            if (context.Direction)
+            {
+                direct = "Вход";
+            }
+            <p>@direct</p>
+        }
+    </PropertyColumn>
+    <PropertyColumn Property="c => c.Devices.DevicesId"></PropertyColumn>
+</Table>
+
+@code {
+    Home _home = new Home();
+
+    ITable _visitingsTable;
+
+    List<Visiting> _visitingsDataSource = new();
+
+    int _visitingsTotal;
+
+    private QueryModel<Visiting> _currentVisitingQuery;
+
+    async Task OnVisitingsChange(QueryModel<Visiting> query)
+    {
+        _currentVisitingQuery = query;
+        await LoadVisitingsData(query);
+    }
+
+    public async Task LoadVisitingsData(QueryModel<Visiting> query = null)
+    {
+        var queryable = RpcClientContext.Visitings
+        .Include(v => v.Pupils)
+        .Include(v => v.Devices)
+        .AsQueryable();
+
+        _visitingsTotal = await queryable.CountAsync();
+
+        if (query != null)
+        {
+            _visitingsDataSource = await queryable
+                .ExecuteTableQuery(query)
+                .CurrentPagedRecords(query)
+                .ToListAsync();
+        }
+        else
+        {
+            _visitingsDataSource = await queryable
+                .Take(5)
+                .ToListAsync();
+        }
+    }
+}
