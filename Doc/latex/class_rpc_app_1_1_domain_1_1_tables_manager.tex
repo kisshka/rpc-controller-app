@@ -1,0 +1,88 @@
+\doxysection{Rpc\+App.\+Domain.\+Tables\+Manager Class Reference}
+\hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager}{}\label{class_rpc_app_1_1_domain_1_1_tables_manager}\index{RpcApp.Domain.TablesManager@{RpcApp.Domain.TablesManager}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a760bb2b9ba53d58660b8988309932032}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a760bb2b9ba53d58660b8988309932032} 
+void {\bfseries Send\+Base\+Configuration} (string guid)
+\begin{DoxyCompactList}\small\item\em Метод, который генерирует и отправляет запрос на добавление базовой конфигурации. Конфигурацию следует устанавливать до добавления в устройство сотрудников и паролей. Включает таблицы Time\+Windows, Relays, Readers, Groups, Access\+Points, Rdr\+Access\+Points и Group\+Accesses. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_tables_manager_aeeaeeebbc2839dfaf46dcd8e4713a596}{Add\+Person\+With\+Password}} (string guid, int person\+Id, string person\+Name, string person\+Surname, string person\+Mid\+Name, int password\+Id, int code\+Type, int config, int password\+Id\+Owner, int password\+Group\+Id, string start, string finish, int\mbox{[}$\,$\mbox{]} code)
+\begin{DoxyCompactList}\small\item\em Метод для добавления сотрудника и его пароля в устройство \end{DoxyCompactList}\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_abd9b26fdf13b419cc8929f77d1c935bf}\label{class_rpc_app_1_1_domain_1_1_tables_manager_abd9b26fdf13b419cc8929f77d1c935bf} 
+void {\bfseries Update\+Person} ()
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_aa5e7723daba49ef494200b03c940a286}\label{class_rpc_app_1_1_domain_1_1_tables_manager_aa5e7723daba49ef494200b03c940a286} 
+void {\bfseries Delete\+Person\+With\+Password} (string guid, int person\+Id, string person\+Name, string person\+Surname, string person\+Mid\+Name, int password\+Id, int code\+Type, int config, int password\+Id\+Owner, int password\+Group\+Id, string start, string finish, int\mbox{[}$\,$\mbox{]} code)
+\begin{DoxyCompactList}\small\item\em Метод для удаления сотруника и его пароля из устройства \end{DoxyCompactList}\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a714fff0bca6bb5a9562a31300dc537f2}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a714fff0bca6bb5a9562a31300dc537f2} 
+Xml\+Rpc\+Struct {\bfseries Create\+Table} (string table\+Name, int action, Xml\+Rpc\+Struct\mbox{[}$\,$\mbox{]} data\+List)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a1354aed6bd1cff98bad9307a0bef0a13}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a1354aed6bd1cff98bad9307a0bef0a13} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Person} (int id, string Name, string First\+Name, string Mid\+Name)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_ad1f3d9d540f11d7ac9a552e62a205363}\label{class_rpc_app_1_1_domain_1_1_tables_manager_ad1f3d9d540f11d7ac9a552e62a205363} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Password} (int id, int code\+Type, int config, int owner, int group\+Id, string start, string finish, int\mbox{[}$\,$\mbox{]} code)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a3f6e5b67e823fd16a528f06db599b6d9}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a3f6e5b67e823fd16a528f06db599b6d9} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Time\+Windows} (int id, int\mbox{[}$\,$\mbox{]} calendar, string name)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a5d16061dead55122ecd42d818414e7bd}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a5d16061dead55122ecd42d818414e7bd} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Group} (int id, string name)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_acc1a83f591de3b7be374d8cc4f075952}\label{class_rpc_app_1_1_domain_1_1_tables_manager_acc1a83f591de3b7be374d8cc4f075952} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Relay} (int id, int com\+Port, int device\+Address, int aggregate\+Address, int pku\+Address=0)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a6425d5df8786923f515e466fe1af6bbd}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a6425d5df8786923f515e466fe1af6bbd} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Reader} (int id, int com\+Port, int device\+Address, int aggregate\+Address, int pku\+Address=0)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a508483d275b97f32ed6d25ba5857a471}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a508483d275b97f32ed6d25ba5857a471} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Access\+Point} (int id, string name, int in\+Key\+Id, int out\+Key\+Id, int mode, int in\+Command=0, int out\+Command=0, int index\+Zone1=0, int index\+Zone2=0, int in\+Duration=0, int out\+Duration=0, int point\+Type=3)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a7fee7b44d25a2a98507b9e30b53db9df}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a7fee7b44d25a2a98507b9e30b53db9df} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Rdr\+Access\+Point} (int id, int reader\+Id, int access\+Point\+Id, int access\+Mode=0, int mode=12)
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a2610edf81a2a46b7b8591d19348c8fee}\label{class_rpc_app_1_1_domain_1_1_tables_manager_a2610edf81a2a46b7b8591d19348c8fee} 
+static Xml\+Rpc\+Struct {\bfseries Add\+Group\+Access} (int id, int group\+Id, int access\+Id, int mode=12, string pardon\+Time="{}30.\+12.\+1899 00\+:00\+:00"{}, int antipassback=0, int config=3, int confirm\+Id=0, int confirm\+Id2=0, int flags=0, int time\+Zone=1)
+\item 
+static int\mbox{[}$\,$\mbox{]} \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_tables_manager_a580a4ee21b9cdc2d75518088cc93e037}{Create\+Always\+Active\+Calendar}} ()
+\begin{DoxyCompactList}\small\item\em Устанавливает расписание работы турникетов в запросе Time\+Windows. Данный метод устанавливает параметры, при которых возможность прохода всегда активна \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_aeeaeeebbc2839dfaf46dcd8e4713a596}\index{RpcApp.Domain.TablesManager@{RpcApp.Domain.TablesManager}!AddPersonWithPassword@{AddPersonWithPassword}}
+\index{AddPersonWithPassword@{AddPersonWithPassword}!RpcApp.Domain.TablesManager@{RpcApp.Domain.TablesManager}}
+\doxysubsubsection{\texorpdfstring{AddPersonWithPassword()}{AddPersonWithPassword()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_tables_manager_aeeaeeebbc2839dfaf46dcd8e4713a596} 
+void Rpc\+App.\+Domain.\+Tables\+Manager.\+Add\+Person\+With\+Password (\begin{DoxyParamCaption}\item[{string}]{guid}{, }\item[{int}]{person\+Id}{, }\item[{string}]{person\+Name}{, }\item[{string}]{person\+Surname}{, }\item[{string}]{person\+Mid\+Name}{, }\item[{int}]{password\+Id}{, }\item[{int}]{code\+Type}{, }\item[{int}]{config}{, }\item[{int}]{password\+Id\+Owner}{, }\item[{int}]{password\+Group\+Id}{, }\item[{string}]{start}{, }\item[{string}]{finish}{, }\item[{int\mbox{[}$\,$\mbox{]}}]{code}{}\end{DoxyParamCaption})}
+
+
+
+Метод для добавления сотрудника и его пароля в устройство 
+
+Пример валидных данных для отправки запроса 
+\begin{DoxyCode}{0}
+
+\end{DoxyCode}
+ \Hypertarget{class_rpc_app_1_1_domain_1_1_tables_manager_a580a4ee21b9cdc2d75518088cc93e037}\index{RpcApp.Domain.TablesManager@{RpcApp.Domain.TablesManager}!CreateAlwaysActiveCalendar@{CreateAlwaysActiveCalendar}}
+\index{CreateAlwaysActiveCalendar@{CreateAlwaysActiveCalendar}!RpcApp.Domain.TablesManager@{RpcApp.Domain.TablesManager}}
+\doxysubsubsection{\texorpdfstring{CreateAlwaysActiveCalendar()}{CreateAlwaysActiveCalendar()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_tables_manager_a580a4ee21b9cdc2d75518088cc93e037} 
+int\mbox{[}$\,$\mbox{]} Rpc\+App.\+Domain.\+Tables\+Manager.\+Create\+Always\+Active\+Calendar (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Устанавливает расписание работы турникетов в запросе Time\+Windows. Данный метод устанавливает параметры, при которых возможность прохода всегда активна 
+
+\begin{DoxyReturn}{Returns}
+Возвращает массив байт для параметра Calendar
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Rpc\+App.\+Domain/Tables\+Manager.\+cs\end{DoxyCompactItemize}

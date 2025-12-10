@@ -1,0 +1,103 @@
+\doxysection{Rpc\+App.\+Domain.\+Server Class Reference}
+\hypertarget{class_rpc_app_1_1_domain_1_1_server}{}\label{class_rpc_app_1_1_domain_1_1_server}\index{RpcApp.Domain.Server@{RpcApp.Domain.Server}}
+
+
+Сервер для прослушивания событий, приходящих от ядра Орион 
+
+Запуск листенера и подписка на получение событий  
+
+
+Inheritance diagram for Rpc\+App.\+Domain.\+Server\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_rpc_app_1_1_domain_1_1_server}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+Xml\+Rpc\+Struct \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_server_ae0b344fd727d94e11c801ffec1a81220}{Get\+Device\+List\+Async\+Result}} (Get\+Device\+List\+Async\+Result\+Params p)
+\item 
+Xml\+Rpc\+Struct \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_server_a0e380e1636e71fdcfbc181e1fdfe591f}{On\+Rs\+Event}} (Xml\+Rpc\+Struct p)
+\item 
+Xml\+Rpc\+Struct \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_server_a9e9ce53b8f112fc9ec6066ce83d68004}{Get\+Key\+Code}} (Get\+Key\+Code\+Params p)
+\item 
+Xml\+Rpc\+Struct \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_server_a86fdca27a794fb9dd4311d0f41156403}{Get\+Device\+Key\+List}} (Xml\+Rpc\+Struct p)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_a324da3599e3f4b29f2087654e94655f3}\label{class_rpc_app_1_1_domain_1_1_server_a324da3599e3f4b29f2087654e94655f3} 
+static void {\bfseries Start\+Listener} ()
+\begin{DoxyCompactList}\small\item\em Запуск сервера и его прослушивания \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Events}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_ac5be07f509372becc5bb8ce672f99a67}\label{class_rpc_app_1_1_domain_1_1_server_ac5be07f509372becc5bb8ce672f99a67} 
+Action$<$ \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_rs_event_args}{Rs\+Event\+Args}} $>$ {\bfseries Rs\+Event\+Received}
+\item 
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_a139b8e4310b6a59d610e5f15dffc0c97}\label{class_rpc_app_1_1_domain_1_1_server_a139b8e4310b6a59d610e5f15dffc0c97} 
+Action$<$ \mbox{\hyperlink{class_rpc_app_1_1_domain_1_1_key_code_event_args}{Key\+Code\+Event\+Args}} $>$ {\bfseries Key\+Code\+Received}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Сервер для прослушивания событий, приходящих от ядра Орион 
+
+Запуск листенера и подписка на получение событий 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ var\ server\ =\ \textcolor{keyword}{new}\ Server();\ */}
+\DoxyCodeLine{}
+\end{DoxyCode}
+ 
+
+\label{doc-func-members}
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_a86fdca27a794fb9dd4311d0f41156403}\index{RpcApp.Domain.Server@{RpcApp.Domain.Server}!GetDeviceKeyList@{GetDeviceKeyList}}
+\index{GetDeviceKeyList@{GetDeviceKeyList}!RpcApp.Domain.Server@{RpcApp.Domain.Server}}
+\doxysubsubsection{\texorpdfstring{GetDeviceKeyList()}{GetDeviceKeyList()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_server_a86fdca27a794fb9dd4311d0f41156403} 
+Xml\+Rpc\+Struct Rpc\+App.\+Domain.\+Server.\+Get\+Device\+Key\+List (\begin{DoxyParamCaption}\item[{Xml\+Rpc\+Struct}]{p}{}\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_rpc_app_1_1_domain_1_1_i_device_service}{Rpc\+App.\+Domain.\+IDevice\+Service}}.
+
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_ae0b344fd727d94e11c801ffec1a81220}\index{RpcApp.Domain.Server@{RpcApp.Domain.Server}!GetDeviceListAsyncResult@{GetDeviceListAsyncResult}}
+\index{GetDeviceListAsyncResult@{GetDeviceListAsyncResult}!RpcApp.Domain.Server@{RpcApp.Domain.Server}}
+\doxysubsubsection{\texorpdfstring{GetDeviceListAsyncResult()}{GetDeviceListAsyncResult()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_server_ae0b344fd727d94e11c801ffec1a81220} 
+Xml\+Rpc\+Struct Rpc\+App.\+Domain.\+Server.\+Get\+Device\+List\+Async\+Result (\begin{DoxyParamCaption}\item[{Get\+Device\+List\+Async\+Result\+Params}]{p}{}\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_rpc_app_1_1_domain_1_1_i_device_service}{Rpc\+App.\+Domain.\+IDevice\+Service}}.
+
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_a9e9ce53b8f112fc9ec6066ce83d68004}\index{RpcApp.Domain.Server@{RpcApp.Domain.Server}!GetKeyCode@{GetKeyCode}}
+\index{GetKeyCode@{GetKeyCode}!RpcApp.Domain.Server@{RpcApp.Domain.Server}}
+\doxysubsubsection{\texorpdfstring{GetKeyCode()}{GetKeyCode()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_server_a9e9ce53b8f112fc9ec6066ce83d68004} 
+Xml\+Rpc\+Struct Rpc\+App.\+Domain.\+Server.\+Get\+Key\+Code (\begin{DoxyParamCaption}\item[{Get\+Key\+Code\+Params}]{p}{}\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_rpc_app_1_1_domain_1_1_i_device_service}{Rpc\+App.\+Domain.\+IDevice\+Service}}.
+
+\Hypertarget{class_rpc_app_1_1_domain_1_1_server_a0e380e1636e71fdcfbc181e1fdfe591f}\index{RpcApp.Domain.Server@{RpcApp.Domain.Server}!OnRsEvent@{OnRsEvent}}
+\index{OnRsEvent@{OnRsEvent}!RpcApp.Domain.Server@{RpcApp.Domain.Server}}
+\doxysubsubsection{\texorpdfstring{OnRsEvent()}{OnRsEvent()}}
+{\footnotesize\ttfamily \label{class_rpc_app_1_1_domain_1_1_server_a0e380e1636e71fdcfbc181e1fdfe591f} 
+Xml\+Rpc\+Struct Rpc\+App.\+Domain.\+Server.\+On\+Rs\+Event (\begin{DoxyParamCaption}\item[{Xml\+Rpc\+Struct}]{p}{}\end{DoxyParamCaption})}
+
+
+
+Implements \mbox{\hyperlink{interface_rpc_app_1_1_domain_1_1_i_device_service}{Rpc\+App.\+Domain.\+IDevice\+Service}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Rpc\+App.\+Domain/Server.\+cs\end{DoxyCompactItemize}

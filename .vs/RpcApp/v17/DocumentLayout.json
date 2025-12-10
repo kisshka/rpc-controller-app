@@ -3,19 +3,19 @@
   "WorkspaceRootPath": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|solutionrelative:rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\structures\\serverresponsestructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\structures\\serverresponsestructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\structures\\serverresponsestructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\structures\\clientrequeststructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\structures\\clientrequeststructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\structures\\clientrequeststructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,13 +38,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
               "RelativeDocumentMoniker": "RpcApp\\Program.cs",
               "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
               "RelativeToolTip": "RpcApp\\Program.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAAgwCYAAAAAAAAA",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAQwCIAAABGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-04T08:42:56.727Z",
               "EditorCaption": ""
@@ -59,8 +59,7 @@
               "RelativeToolTip": "RpcApp.Domain\\Structures\\ServerResponseStructures.cs",
               "ViewState": "AQIAAAoAAAAAAAAAAAAAwFoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-09T07:51:23.778Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-09T07:51:23.778Z"
             },
             {
               "$type": "Document",
@@ -72,12 +71,11 @@
               "RelativeToolTip": "RpcApp.Domain\\Structures\\ClientRequestStructures.cs",
               "ViewState": "AQIAABkBAAAAAAAAAAAswH4BAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-09T07:51:16.452Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-09T07:51:16.452Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TablesManager.cs",
               "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\TablesManager.cs",
               "RelativeDocumentMoniker": "RpcApp.Domain\\TablesManager.cs",
@@ -85,8 +83,7 @@
               "RelativeToolTip": "RpcApp.Domain\\TablesManager.cs",
               "ViewState": "AQIAAAYAAAAAAAAAAAAAABkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T09:45:49.305Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T09:45:49.305Z"
             },
             {
               "$type": "Document",
@@ -98,8 +95,7 @@
               "RelativeToolTip": "RpcApp.Domain\\RequestSender.cs",
               "ViewState": "AQIAANEBAAAAAAAAAAAAAOABAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T08:43:24.037Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T08:43:24.037Z"
             }
           ]
         }
