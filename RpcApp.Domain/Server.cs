@@ -11,7 +11,7 @@ namespace RpcApp.Domain
     {
 
         [XmlRpcMethod("GetDeviceListAsyncResult")]
-        XmlRpcStruct GetDeviceListAsyncResult(GetDeviceListAsyncResultParams p);
+        XmlRpcStruct GetDeviceListAsyncResult(XmlRpcStruct p);
 
         [XmlRpcMethod("ONRSEVENT")]
         XmlRpcStruct OnRsEvent(XmlRpcStruct p);
@@ -62,15 +62,64 @@ namespace RpcApp.Domain
     {
         public event EventHandler<RsEventArgs> RsEventReceived;
         public event EventHandler<KeyCodeEventArgs> KeyCodeReceived;
+        public event EventHandler<DeviceDataEventArgs> DeviceDataReceived;
 
-        public XmlRpcStruct GetDeviceListAsyncResult(GetDeviceListAsyncResultParams p)
+        public XmlRpcStruct GetDeviceListAsyncResult(XmlRpcStruct p)
         {
-            Console.WriteLine("=== XML-RPC Request Received ===");
-            Console.WriteLine($"Method: GetDeviceListAsyncResult");
-            Console.WriteLine($"IP Server: {p.IPSERVER}");
-            Console.WriteLine($"Original Method: {p.MethodName}");
-            Console.WriteLine($"Result: {p.Result}");
-            Console.WriteLine($"Message Type: {p.MessageType}");
+            Console.WriteLine("=== Получен список устройств ===");
+
+                var deviceData = new DeviceDataEventArgs();
+                var comPortList = (object[])p["ComPortList"];
+
+                foreach (var portObj in comPortList)
+                {
+                    var port = (XmlRpcStruct)portObj;
+
+                    var comPortInfo = new ComPortInfo
+                    {
+                        PortNumber = (int)port["ComPort"]
+                    };
+
+                    var deviceList = (object[])port["DeviceList"];
+
+                    foreach (var deviceObj in deviceList)
+                    {
+                        var device = (XmlRpcStruct)deviceObj;
+
+                        var controller = new ControllerInfo
+                        {
+                            Address = (int)device["DeviceAddress"],
+                            DeviceType = (int)device["DeviceType"],
+                            OnConnect = (int)device["OnConnect"]
+                        };
+
+                        // Реле
+                        if (device.ContainsKey("RelayList"))
+                        {
+                            var relayList = (object[])device["RelayList"];
+
+                            foreach (var relayObj in relayList)
+                            {
+                                var relay = (XmlRpcStruct)relayObj;
+
+                                var relayInfo = new RelayInfo
+                                {
+                                    Id = (int)relay["ID"],
+                                    Address = (int)relay["Address"],
+                                    State = (int)relay["State"]
+                                };
+
+                                controller.Relays.Add(relayInfo);
+                            }
+                        }
+
+                        comPortInfo.Controllers.Add(controller);
+                    }
+
+                    deviceData.ComPorts.Add(comPortInfo);
+                }
+
+                DeviceDataReceived?.Invoke(this, deviceData);
 
             return GetBaseResponse();
         }
@@ -78,13 +127,18 @@ namespace RpcApp.Domain
         public XmlRpcStruct OnRsEvent(XmlRpcStruct p)
         {
             Console.WriteLine("===НОВОЕ СОБЫТИЕ===");
-            var guid = (string)p["GUID"];
-            Console.WriteLine($"GUID: {guid}");
             XmlRpcStruct dataEvents = (XmlRpcStruct)p["DATAEVENTS"];
             Console.WriteLine((string)dataEvents["NAMETYPE"]);
 
             Console.WriteLine((int)dataEvents["EVENT"]);
             Console.WriteLine((string)dataEvents["NAMEEVENT"]);
+
+            int idPerson;
+            if (dataEvents.ContainsKey("IDPERSON"))
+            {
+                idPerson = (int)dataEvents["IDPERSON"];
+            }
+            else idPerson = -1;
 
             if ((XmlRpcStruct)dataEvents["EXTENDEDDATA"] != null)
             {
@@ -95,13 +149,22 @@ namespace RpcApp.Domain
             }
             Console.WriteLine("=== End of ONRSEVENT ===");
 
+            //Получение устройства
+            var address = (XmlRpcStruct)dataEvents["ADDRESS"];
+            int rele = -1;
+            if (address.Contains("ADDRELEMENT") )
+                rele = (int)address["ADDRELEMENT"]; 
+
             RsEventReceived?.Invoke(this, new RsEventArgs
             {
-                Guid = guid,
+                IdPerson = idPerson,
                 NameType = (string)dataEvents["NAMETYPE"],
                 Event = (int)dataEvents["EVENT"],
                 NameEvent = (string)dataEvents["NAMEEVENT"],
-            });
+                Type = (int)dataEvents["TYPE"],
+                Device = (int)address["ADDRDEVICE"],
+                Rele = rele
+        });
 
             return GetBaseResponse();
         }
