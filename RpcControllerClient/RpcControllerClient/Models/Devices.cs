@@ -7,7 +7,7 @@ namespace RpcControllerClient.Models
     {
         [Key]
         [Display(Name = "ID устройства")]
-        public int DevicesId { get; set; }
+        public int DeviceId { get; set; }
 
         [Required]
         [NotNull]

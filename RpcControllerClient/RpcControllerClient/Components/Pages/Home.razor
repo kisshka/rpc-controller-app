@@ -17,11 +17,11 @@
     }
     <div class="table">
         <Tabs OnTabClick="OnTabClick">
-            <TabPane Tab="Устройства" >
-                <DeviceTab @ref="_deviceTab"/>
+            <TabPane Tab="Устройства">
+                <DeviceTab @ref="_deviceTab" />
             </TabPane>
             <TabPane Tab="Ученики">
-                <PupilsTab @ref="_pupilsTab" HomeComponent="this" Guid="guid" server="server" requestSender="requestSender"/>
+                <PupilsTab @ref="_pupilsTab" HomeComponent="this" Guid="guid" server="server" requestSender="requestSender" />
             </TabPane>
             <TabPane Tab="Посещения" Key="visitings">
                 <VisitingsTab @ref="_visitingsTab" />
@@ -57,14 +57,23 @@
             {
                 server.RsEventReceived += async (sender, RsEventArgs) =>
                 {
-                // if (RsEventArgs.NameEvent == "ПРОХОД") {
-                //     int id = RsEventArgs.IdPerson;
-                //     var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == id);
-                //     string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
-                //     await notice.OnEvent( $" {RsEventArgs.NameEvent} \n{fio}");
-                // }
-                // else
-                    await notice.OnEvent($" {RsEventArgs.NameEvent}");
+                    if (RsEventArgs.NameEvent == "ПРОХОД")
+                    {
+                        int id = RsEventArgs.IdPerson;
+                        var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilId == id);
+                        string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
+                        await notice.OnEvent($" {RsEventArgs.NameEvent} ");
+                        Visiting visiting = new Visiting()
+                        {
+                            VisitingDateTime = DateTime.Now,
+                            Direction = true,
+                            DeviceId = 4,
+                            PupilId = pupil.PupilId
+                        };
+                    }
+                    else
+                        await notice.OnEvent($" {RsEventArgs.NameEvent}");
+
                 };
 
                 var serverThread = new Thread(() => server.StartListener());
@@ -74,7 +83,7 @@
                 tablesManager.SendBaseConfiguration(guid);
                 foreach (var pupil in RpcClientContext.Pupils)
                 {
-                    tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId,
+                    tablesManager.AddPersonWithPassword(guid, pupil.PupilId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilId, 4, 128, pupil.PupilId,
                     3, DateTime.Now.ToString(), pupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(pupil.CardNumber));
                 }
                 alert = AlertSuccess();

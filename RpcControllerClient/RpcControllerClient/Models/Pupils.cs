@@ -8,7 +8,7 @@ namespace RpcControllerClient.Models
     {
         [Key]
         [Display(Name = "ID ученика")]
-        public int PupilsId { get; set; }
+        public int PupilId { get; set; }
 
 
         [Required]
@@ -21,9 +21,8 @@ namespace RpcControllerClient.Models
         public string NamePupil { get; set; }
 
 
-        [Required]
         [Display(Name = "Отчество")]
-        public string PatronymicPupil { get; set; }
+        public string? PatronymicPupil { get; set; }
 
 
         [Required]
@@ -38,8 +37,6 @@ namespace RpcControllerClient.Models
 
         [Required]
         [Display(Name = "Номер карты")]
-        public string CardNumber { get; set; }  
-
-        public List<Visiting>? Visitings { get; set; }
+        public string CardNumber { get; set; }
     }
 }

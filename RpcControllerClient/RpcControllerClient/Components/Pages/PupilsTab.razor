@@ -65,7 +65,7 @@
 
     public async Task LoadPupilsData(QueryModel<Pupils> query = null)
     {
-        var queryable = RpcClientContext.Pupils.Include(p => p.Visitings).AsQueryable();
+        var queryable = RpcClientContext.Pupils.AsQueryable();
 
         _pupilsTotal = await queryable.CountAsync();
 
@@ -153,7 +153,7 @@
 
                 _pupilsTable.ReloadData();
                 StateHasChanged();
-                HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilsId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilsId, 4, 128, newPupil.PupilsId,
+                HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilId, 4, 128, newPupil.PupilId,
                             3, DateTime.Now.ToString(), newPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(newPupil.CardNumber));
             },
             OnCancel = async e =>
@@ -251,22 +251,36 @@
     {
         string previousValue = "";
         int unchangedCount = 0;
-        requestSender.ReadKeyCodeFromReader(Guid);
-        server.KeyCodeReceived += async (sender, args) =>
+        if(_encoding == HEX)
         {
-            _scannedCardNumber = args.KeyCode;
-        };
-        if (_scannedCardNumber.Length == 16)
-        {
-            if (_isEditMode)
+            while (_isReadingCard)
             {
-                _editingPupil.CardNumber = _scannedCardNumber;
+                await Task.Delay(100);
+
+                if (_scannedCardNumber != previousValue)
+                {
+                    previousValue = _scannedCardNumber;
+                    unchangedCount = 0;
+                }
+                else if (!string.IsNullOrEmpty(_scannedCardNumber))
+                {
+                    unchangedCount++;
+                    if (unchangedCount >= 3)
+                    {
+                        if (_isEditMode)
+                        {
+                            _editingPupil.CardNumber = _scannedCardNumber;
+                            CardNumberFormating(_editingPupil);
+                        }
+                        else
+                        {
+                            pupil.CardNumber = _scannedCardNumber;
+                            CardNumberFormating(pupil);
+                        }
+                        break;
+                    }
+                }
             }
-            else
-            {
-                pupil.CardNumber = _scannedCardNumber;
-            }
-            await CloseReadingCardModal();
         }
         else
         {
@@ -284,43 +298,27 @@
                     unchangedCount++;
                     if (unchangedCount >= 3)
                     {
-                        await OnCreateOrChangePupil();
+                        requestSender.ReadKeyCodeFromReader(Guid);
+                        server.KeyCodeReceived += (sender, args) =>
+                        {
+                            _scannedCardNumber = args.KeyCode;
+                        };
+                        if (_isEditMode)
+                        {
+                            _editingPupil.CardNumber = _scannedCardNumber;
+                        }
+                        else
+                        {
+                            pupil.CardNumber = _scannedCardNumber;
+                        }
                         break;
                     }
                 }
             }
-        }
-        server.KeyCodeReceived -= async (sender, args) =>{};
-    }
 
-    private async Task OnCreateOrChangePupil()
-    {
-        if (_encoding == DEX)
-        {
-            if (_isEditMode)
-            {
-                _editingPupil.CardNumber = _scannedCardNumber;
-            }
-            else
-            {
-                pupil.CardNumber = _scannedCardNumber;
-            }
-            await CloseReadingCardModal();
+            server.KeyCodeReceived -= (sender, args) => { };
         }
-        else
-        {
-            if (_isEditMode)
-            {
-                _editingPupil.CardNumber = _scannedCardNumber;
-                CardNumberFormating(_editingPupil);
-            }
-            else
-            {
-                pupil.CardNumber = _scannedCardNumber;
-                CardNumberFormating(pupil);
-            }
-            await CloseReadingCardModal();
-        }
+        await CloseReadingCardModal();
     }
 
     private async Task CloseReadingCardModal()
@@ -365,19 +363,19 @@
         if (!await Comfirm($"Вы уверены что хотите удалить данную запись?"))
             return;
 
-        var entity = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == delPupil.PupilsId);
+        var entity = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilId == delPupil.PupilId);
         if (entity != null)
         {
             RpcClientContext.Pupils.Remove(entity);
             await RpcClientContext.SaveChangesAsync();
         }
         _pupilsDataSource = _pupilsDataSource
-            .Where(p => p.PupilsId != delPupil.PupilsId)
+            .Where(p => p.PupilId != delPupil.PupilId)
             .ToList();
         _pupilsTotal = _pupilsDataSource.Count;
         _pupilsTable.ReloadData();
         StateHasChanged();
-        HomeComponent.tablesManager.DeletePersonWithPassword(Guid, delPupil.PupilsId, delPupil.NamePupil, delPupil.SurnamePupil, delPupil.PatronymicPupil, delPupil.PupilsId, 4, 128, delPupil.PupilsId,
+        HomeComponent.tablesManager.DeletePersonWithPassword(Guid, delPupil.PupilId, delPupil.NamePupil, delPupil.SurnamePupil, delPupil.PatronymicPupil, delPupil.PupilId, 4, 128, delPupil.PupilId,
             3, DateTime.Now.ToString(), delPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(delPupil.CardNumber));
     }
 
@@ -396,7 +394,7 @@
 
         _editingPupil = new Pupils
         {
-            PupilsId = pupil.PupilsId,
+            PupilId = pupil.PupilId,
             SurnamePupil = pupil.SurnamePupil,
             NamePupil = pupil.NamePupil,
             PatronymicPupil = pupil.PatronymicPupil,
@@ -420,7 +418,7 @@
                 }
 
                 var existingPupil = await RpcClientContext.Pupils
-                    .FirstOrDefaultAsync(p => p.PupilsId == _editingPupil.PupilsId);
+                    .FirstOrDefaultAsync(p => p.PupilId == _editingPupil.PupilId);
 
                 if (existingPupil != null)
                 {
@@ -433,7 +431,7 @@
 
                     await RpcClientContext.SaveChangesAsync();
 
-                    var index = _pupilsDataSource.FindIndex(p => p.PupilsId == _editingPupil.PupilsId);
+                    var index = _pupilsDataSource.FindIndex(p => p.PupilId == _editingPupil.PupilId);
                     if (index >= 0)
                     {
                         _pupilsDataSource[index] = existingPupil;

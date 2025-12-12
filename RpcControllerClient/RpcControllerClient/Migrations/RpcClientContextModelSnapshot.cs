@@ -19,7 +19,7 @@ namespace RpcControllerClient.Migrations
 
             modelBuilder.Entity("RpcControllerClient.Models.Devices", b =>
                 {
-                    b.Property<int>("DevicesId")
+                    b.Property<int>("DeviceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -30,14 +30,14 @@ namespace RpcControllerClient.Migrations
                     b.Property<bool>("DeviceStatus")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("DevicesId");
+                    b.HasKey("DeviceId");
 
                     b.ToTable("Devices");
                 });
 
             modelBuilder.Entity("RpcControllerClient.Models.Pupils", b =>
                 {
-                    b.Property<int>("PupilsId")
+                    b.Property<int>("PupilId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -57,14 +57,13 @@ namespace RpcControllerClient.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PatronymicPupil")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SurnamePupil")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("PupilsId");
+                    b.HasKey("PupilId");
 
                     b.ToTable("Pupils");
                 });
@@ -75,10 +74,13 @@ namespace RpcControllerClient.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DevicesId")
+                    b.Property<int>("DeviceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Direction")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PupilId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("VisitingDateTime")
@@ -86,56 +88,30 @@ namespace RpcControllerClient.Migrations
 
                     b.HasKey("VisitingId");
 
-                    b.HasIndex("DevicesId");
+                    b.HasIndex("DeviceId");
+
+                    b.HasIndex("PupilId");
 
                     b.ToTable("Visitings");
                 });
 
-            modelBuilder.Entity("VisitingPupils", b =>
-                {
-                    b.Property<int>("VisitingPupilsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PupilsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VisitingId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("VisitingPupilsId");
-
-                    b.HasIndex("PupilsId");
-
-                    b.HasIndex("VisitingId");
-
-                    b.ToTable("VisitingPupils");
-                });
-
             modelBuilder.Entity("RpcControllerClient.Models.Visiting", b =>
                 {
-                    b.HasOne("RpcControllerClient.Models.Devices", "Devices")
+                    b.HasOne("RpcControllerClient.Models.Devices", "Device")
                         .WithMany()
-                        .HasForeignKey("DevicesId")
+                        .HasForeignKey("DeviceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Devices");
-                });
-
-            modelBuilder.Entity("VisitingPupils", b =>
-                {
-                    b.HasOne("RpcControllerClient.Models.Pupils", null)
+                    b.HasOne("RpcControllerClient.Models.Pupils", "Pupil")
                         .WithMany()
-                        .HasForeignKey("PupilsId")
+                        .HasForeignKey("PupilId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RpcControllerClient.Models.Visiting", null)
-                        .WithMany()
-                        .HasForeignKey("VisitingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Device");
+
+                    b.Navigation("Pupil");
                 });
 #pragma warning restore 612, 618
         }
