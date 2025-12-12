@@ -344,7 +344,7 @@
                 <Input @bind-Value="@_scannedCardNumber" AutoFocus="true" />
             </div>
         </div>
-        ;
+    ;
     }
 
     private string ReverseByPairs(string input)
@@ -375,8 +375,15 @@
         _pupilsTotal = _pupilsDataSource.Count;
         _pupilsTable.ReloadData();
         StateHasChanged();
-        HomeComponent.tablesManager.DeletePersonWithPassword(Guid, delPupil.PupilId, delPupil.NamePupil, delPupil.SurnamePupil, delPupil.PatronymicPupil, delPupil.PupilId, 4, 128, delPupil.PupilId,
-            3, DateTime.Now.ToString(), delPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(delPupil.CardNumber));
+        try
+        {
+            HomeComponent.tablesManager.DeletePersonWithPassword(Guid, delPupil.PupilId, delPupil.NamePupil, delPupil.SurnamePupil, delPupil.PatronymicPupil, delPupil.PupilId, 4, 128, delPupil.PupilId,
+                3, DateTime.Now.ToString(), delPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(delPupil.CardNumber));
+        }
+        catch(Exception e)
+        {
+            await notice.OnWarning("Вы не подключены к устройству. Данные с устройством синхронизируются при возобновлении контакта.");
+        }
     }
 
     private async Task<bool> Comfirm(string message)

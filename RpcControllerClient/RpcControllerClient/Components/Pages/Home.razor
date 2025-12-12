@@ -63,13 +63,18 @@
                         var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilId == id);
                         string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
                         await notice.OnEvent($" {RsEventArgs.NameEvent} ");
-                        Visiting visiting = new Visiting()
+                        Visiting newVisiting = new Visiting()
                         {
                             VisitingDateTime = DateTime.Now,
                             Direction = true,
-                            DeviceId = 4,
+                            DeviceId = RsEventArgs.Device,
                             PupilId = pupil.PupilId
                         };
+                        await notice.OnEvent($" {RsEventArgs.NameEvent} \n {fio}");
+                        RpcClientContext.Visitings.Add(newVisiting);
+                        RpcClientContext.SaveChanges();
+                        _visitingsTab._visitingsTable.ReloadData();
+                        StateHasChanged();
                     }
                     else
                         await notice.OnEvent($" {RsEventArgs.NameEvent}");

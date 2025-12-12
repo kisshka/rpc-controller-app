@@ -3,32 +3,12 @@
   "WorkspaceRootPath": "D:\\Visual Studio\\rpc-controller-app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|d:\\visual studio\\rpc-controller-app\\rpccontrollerclient\\rpccontrollerclient\\components\\pages\\pupilstab.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|solutionrelative:rpccontrollerclient\\rpccontrollerclient\\components\\pages\\pupilstab.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\structures\\servereventargs.cs||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\structures\\servereventargs.cs||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{736882C9-982C-4CF8-A290-DD49E8F17FA2}|RpcApp\\RpcApp.csproj|solutionrelative:rpcapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\tablesmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpcapp.domain\\requestsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\requestsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|c:\\\u0441\u044E\u0434\u0430\\github projects\\rpc-controller-app\\rpcapp.domain\\structures\\serverresponsestructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E90B89A3-DD5E-415E-8056-D36C34193854}|RpcApp.Domain\\RpcApp.Domain.csproj|solutionrelative:rpcapp.domain\\structures\\serverresponsestructures.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\rpccontrollerclient\\rpccontrollerclient\\models\\crc8.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|solutionrelative:rpccontrollerclient\\rpccontrollerclient\\models\\crc8.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|d:\\visual studio\\rpc-controller-app\\rpccontrollerclient\\rpccontrollerclient\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{788B9EAA-F3B3-479E-8125-96972A511927}|RpcControllerClient\\RpcControllerClient\\RpcControllerClient.csproj|solutionrelative:rpccontrollerclient\\rpccontrollerclient\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,101 +18,60 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{02d1f8b9-d0a0-4ccb-9687-e6f0f781ad9e}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CRC8.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Models\\CRC8.cs",
-              "RelativeDocumentMoniker": "RpcControllerClient\\RpcControllerClient\\Models\\CRC8.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Models\\CRC8.cs",
-              "RelativeToolTip": "RpcControllerClient\\RpcControllerClient\\Models\\CRC8.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAAAACgAAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-11T08:26:14.193Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TablesManager.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\TablesManager.cs",
-              "RelativeDocumentMoniker": "RpcApp.Domain\\TablesManager.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\TablesManager.cs",
-              "RelativeToolTip": "RpcApp.Domain\\TablesManager.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAA3AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T21:02:03.986Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RequestSender.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\RequestSender.cs",
-              "RelativeDocumentMoniker": "RpcApp.Domain\\RequestSender.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\RequestSender.cs",
-              "RelativeToolTip": "RpcApp.Domain\\RequestSender.cs",
-              "ViewState": "AQIAAGoAAAAAAAAAAAD4v3kAAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T19:10:32.664Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
-              "RelativeDocumentMoniker": "RpcApp\\Program.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp\\Program.cs",
-              "RelativeToolTip": "RpcApp\\Program.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAAABMAAABIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T12:04:07.099Z",
+              "DocumentIndex": 1,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
+              "ToolTip": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\Home.razor",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAEUAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-12T10:40:34.221Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Server.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Server.cs",
-              "RelativeDocumentMoniker": "RpcApp.Domain\\Server.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Server.cs",
-              "RelativeToolTip": "RpcApp.Domain\\Server.cs",
-              "ViewState": "AQIAADgAAAAAAAAAAAAqwEcAAAA9AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T11:12:31.082Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ServerEventArgs.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Structures\\ServerEventArgs.cs",
-              "RelativeDocumentMoniker": "RpcApp.Domain\\Structures\\ServerEventArgs.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Structures\\ServerEventArgs.cs",
-              "RelativeToolTip": "RpcApp.Domain\\Structures\\ServerEventArgs.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAqwBMAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T07:52:24.855Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ServerResponseStructures.cs",
-              "DocumentMoniker": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Structures\\ServerResponseStructures.cs",
-              "RelativeDocumentMoniker": "RpcApp.Domain\\Structures\\ServerResponseStructures.cs",
-              "ToolTip": "C:\\\u0421\u042E\u0414\u0410\\Github Projects\\rpc-controller-app\\RpcApp.Domain\\Structures\\ServerResponseStructures.cs",
-              "RelativeToolTip": "RpcApp.Domain\\Structures\\ServerResponseStructures.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAowBEAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T08:05:37.549Z",
+              "Title": "PupilsTab.razor",
+              "DocumentMoniker": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\PupilsTab.razor",
+              "RelativeDocumentMoniker": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\PupilsTab.razor",
+              "ToolTip": "D:\\Visual Studio\\rpc-controller-app\\RpcControllerClient\\RpcControllerClient\\Components\\Pages\\PupilsTab.razor",
+              "RelativeToolTip": "RpcControllerClient\\RpcControllerClient\\Components\\Pages\\PupilsTab.razor",
+              "ViewState": "AgIAAGsBAAAAAAAAAAAAAHkBAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-12T10:40:33.033Z",
               "EditorCaption": ""
             }
           ]
