@@ -11,9 +11,13 @@ class Program
     {
         // Необходимо для того чтобы не было ошибки с кодировкой
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+
         var server = new Server();
         server.RsEventReceived += (sender, RsEventArgs) =>
         {
+            Console.WriteLine("Тип устройства:" + RsEventArgs.Type);
+            Console.WriteLine("АДрес устройства:" + RsEventArgs.Device +" " + RsEventArgs.Rele);
             Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.NameEvent}");
         };
 
@@ -26,18 +30,36 @@ class Program
             Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.KeyCode}");
         };
 
+        server.DeviceDataReceived += (sender, args) => {
+            Console.WriteLine($"\n=== ПОЛУЧЕН СПИСОК УСТРОЙСТВ ===");
+
+            foreach (var port in args.ComPorts)
+            {
+                Console.WriteLine($"\nCOM{port.PortNumber}:");
+
+                foreach (var controller in port.Controllers)
+                {
+                    Console.WriteLine($"  Контроллер [Адрес: {controller.Address}, Тип: {controller.DeviceType}] Cостояние: {controller.OnConnect}");
+                    Console.WriteLine($"    Реле: {controller.Relays.Count}");
+                    foreach (var rele in controller.Relays)
+                    {
+                        Console.WriteLine("Номер реле" + rele.Id);
+                        Console.WriteLine("Адрес реле" + rele.Address);
+                        Console.WriteLine( "Состояние устройства" + rele.State);    
+                    }
+                }
+            }
+        };
+
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
-
-        Console.ReadKey(true);
-        //client.GetDevice(guid);
 
         client.GetDeviceListAsync();
 
         Console.ReadKey(true);
 
-        client.ReadKeyCodeFromReader(guid);
+        //client.ReadKeyCodeFromReader(guid);
 
         /*client.GetPasswordListWithStatus(guid);
                 client.ReadDeviceKeyList(guid);*/
