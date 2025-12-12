@@ -22,6 +22,9 @@ namespace RpcApp.Domain
 
         [XmlRpcMethod("GetDeviceKeyList")]
         XmlRpcStruct GetDeviceKeyList(XmlRpcStruct p);
+
+        [XmlRpcMethod("ONINITIATIVE")]
+        XmlRpcStruct OnInitiative(XmlRpcStruct p);
     }
 
 
@@ -184,6 +187,13 @@ namespace RpcApp.Domain
 
         public XmlRpcStruct GetDeviceKeyList(XmlRpcStruct p)
         {
+            return GetBaseResponse();
+        }
+
+        public XmlRpcStruct OnInitiative (XmlRpcStruct p)
+        {
+            Console.WriteLine("===ПРИШЛО СОБЫТИЕ OnInitiative ===");
+
             return GetBaseResponse();
         }
 
