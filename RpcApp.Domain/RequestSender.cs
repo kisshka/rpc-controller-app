@@ -27,9 +27,6 @@ namespace RpcApp.Domain
         [XmlRpcMethod("CONTROLOBJECTS")]
         XmlRpcStruct ControlObjects (ControlObjectsParams p);
 
-        [XmlRpcMethod("SynchronizeOneKey")]
-        bool SynchronizeOneKey (SynchronizeOneKeyParams p);
-
         [XmlRpcMethod("ReadKeyCodeFromReader")]
         XmlRpcStruct ReadKeyCodeFromReader(ReadKeyCodeFromReaderParams p);
 
@@ -42,15 +39,12 @@ namespace RpcApp.Domain
         [XmlRpcMethod("ReadConfiguration")]
         void ReadConfiguration(ReadConfigurationParams p);
 
-        [XmlRpcMethod("GETLISTMETHODS")]
-        void GetListMethods(GetListMethodsParams p);
-
         [XmlRpcMethod("REFRESHTABLESDATA")]
         public void RefreshTablesData(XmlRpcStruct p);
     }
 
     /// <summary>
-    /// Класс, содержащий в себе методы для отправки XML-запросов к веб серверу Orion
+    /// Класс, реализующий методы для отправки XML-запросов к веб серверу Orion
     /// </summary>
     public class RequestSender
     {
@@ -68,7 +62,7 @@ namespace RpcApp.Domain
         /// <summary>
         /// Отправка запроса SetSubscribe - Подпись клиента к модулю управления
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         /// <returns name="guid">При успешной отправке XML-запроса возвращает жетон безопасности</returns> 
 
@@ -132,7 +126,8 @@ namespace RpcApp.Domain
         /// <summary>
         /// Отправка запроса CloseScribe - Отписаться от клиента 
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void CloseScribe(string guid)
         {
@@ -176,7 +171,8 @@ namespace RpcApp.Domain
         /// <summary>
         /// Отправка запроса SetConfigurationHwSrv - Передать конфигурацию в модуль управления
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void SetConfigurationHwSrv(string guid)
         {
@@ -214,12 +210,9 @@ namespace RpcApp.Domain
                          type = 16,
                         priorityDevice = 0,
                         version = 220,
-    }
-
+                        }
                     ]
-
                 };
-
 
                 Console.WriteLine("Отправляем запрос SetConfigurationHwSrw...");
                 var response = _rpcClient.SetConfigurationHwSrw(configurationParams) ?? throw new Exception("Пустой ответ от сервера");
@@ -248,7 +241,8 @@ namespace RpcApp.Domain
         /// <summary>
         /// Отправка запроса GetDevice -  Узнать состояние и информацию о устройстве
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void GetDevice(string guid)
         {
@@ -296,10 +290,13 @@ namespace RpcApp.Domain
             }
         }
 
+
+
         /// <summary>
-        /// Отправка запроса GetDevice -  Узнать состояние и информацию о устройстве
+        /// Отправка запроса GetDeviceListAsync -  Узнать состояние и информацию о устройстве
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void GetDeviceListAsync()
         {
@@ -315,9 +312,9 @@ namespace RpcApp.Domain
         }
 
         /// <summary>
-        /// Отправка запроса ControlObjects -  ПОКА НЕ РАБОТАЕТ
+        /// Отправка запроса ControlObjects -  упраление взятием снятием различных объектов охранной системы
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void ControlObjects(string guid)
         {
@@ -366,30 +363,12 @@ namespace RpcApp.Domain
             }
         }
 
-
         /// <summary>
-        /// Отправка запроса SynchronizeOneKey -  синхронизировать ключ, находящийся в таблице модуля управления
+        /// Отправка запроса ReadKeyCodeFromReader -  Считать и передать ключ карты
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
         /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
-        public void SynchronizeOneKey(string guid, int id)
-        {
-            SynchronizeOneKeyParams synchronizeOneKeyParams = new()
-            {
-                guid = guid,
-                ipServer = "127.0.0.1",
-                portServer = 8095,
-                methodNameForAnswer = "SynchronizeOneKeyResult",
-                id = id,
-                autoWriting = 1,
-                rewriteDeleted = 0,
-                rewriteBlocked = 0
-            };
-
-            Console.WriteLine("Отправляем запрос SynchronizeOneKey...");
-            _ = _rpcClient.SynchronizeOneKey(synchronizeOneKeyParams);
-        }
-
         public void ReadKeyCodeFromReader(string guid)
         {
             ReadKeyCodeFromReaderParams keyCodeFromReaderParams = new()
@@ -440,7 +419,12 @@ namespace RpcApp.Domain
             _rpcClient.ReadDeviceKeyList(deviceKeyListParams);
         }
 
-
+        /// <summary>
+        /// Отправка запроса ReadConfiguration -  Считать конфигурацию из устройства
+        /// </summary>
+        /// <param name="guid">жетон безопасности</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void ReadConfiguration(string guid)
         {
             ReadConfigurationParams configurationParams = new()
@@ -455,25 +439,20 @@ namespace RpcApp.Domain
                 ReaderAddress = 1,
             };
 
-            Console.WriteLine("Отправляем запрос ReadKeyCodeFromReader...");
+            Console.WriteLine("Отправляем запрос ReadConfiguration...");
             _rpcClient.ReadConfiguration(configurationParams);
         }
 
-        public void GetListMethods(string guid)
-        {
-            GetListMethodsParams methodsParams = new()
-            {
-                guid = guid,
-            };
-
-            Console.WriteLine("Отправляем запрос GetListMethods...");
-            _rpcClient.GetListMethods(methodsParams);
-        }
-
+        /// <summary>
+        /// Отправка запроса GetDevice -  Узнать состояние и информацию о устройстве
+        /// </summary>
+        /// <param name="guid">жетон безопасности</param>
+        /// <param name="tableArray">Редактируемые таблицы</param>
+        /// <exception cref="Exception">Неопределенная ошибка</exception>
+        /// <exception cref="XmlRpcFaultException">Ошибка xml-rpc</exception>
         public void RefreshTablesData(string guid, XmlRpcStruct[] tableArray)
         {
-            // Создаем параметры
-            XmlRpcStruct parameters = new XmlRpcStruct
+            XmlRpcStruct parameters = new()
             {
                 ["GUID"] = guid,
                 ["MethodNameForAnswer"] = "RefreshTablesResult",
@@ -483,9 +462,6 @@ namespace RpcApp.Domain
             };
 
             Console.WriteLine("Отправляем запрос RefreshTablesData...");
-
-            // Логируем структуру
-            Console.WriteLine($"GUID: {guid}");
             Console.WriteLine($"Таблиц: {tableArray.Length}");
 
             _rpcClient.RefreshTablesData(parameters);

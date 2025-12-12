@@ -7,22 +7,6 @@ using System.Threading.Tasks;
 
 namespace RpcApp.Domain
 {
-    //КЛАССЫ СОБЫТИЙ ДЛЯ ПЕРЕДАЧИ ДАННЫХ
-    public class RsEventArgs : EventArgs
-    {
-        public string Guid { get; set; }
-        public string NameType { get; set; }
-        public int Event { get; set; }
-        public string NameEvent { get; set; }
-    }
-
-
-    public class KeyCodeEventArgs : EventArgs
-    {
-        public string KeyCode { get; set; }
-    }
-
-
     public interface IDeviceService
     {
 
@@ -43,12 +27,14 @@ namespace RpcApp.Domain
 
     /// <summary>
     ///  Сервер для прослушивания событий, приходящих от ядра Орион
+    ///  Запускается по адресу http://127.0.0.1:8095/
+    ///  По этому же адресу доступна документация всех запросов, которые обрабатывает сервер.
+    ///  </summary>
     /// <example>
     /// Запуск листенера и подписка на получение событий
     /// <code>
     /// 
     ///    var server = new Server();
-
     ///     server.RsEventReceived += (args) =>
     ///        {
     ///    Console.WriteLine($"\nПОЛУЧЕНО НОВОЕ СОБЫТИЕ");
@@ -66,17 +52,16 @@ namespace RpcApp.Domain
     ///   Console.WriteLine($"  Время: {DateTime.Now:HH:mm:ss}");
     ///    Console.WriteLine();
     /// };
-
     ///     var serverThread = new Thread(() => Server.StartListener());
     /// serverThread.Start();
     /// </code>
     /// </example>
-    /// </summary>
+
     [XmlRpcService]
     public class Server : XmlRpcListenerService, IDeviceService
     {
-        public event Action<RsEventArgs> RsEventReceived;
-        public event Action<KeyCodeEventArgs> KeyCodeReceived;
+        public event EventHandler<RsEventArgs> RsEventReceived;
+        public event EventHandler<KeyCodeEventArgs> KeyCodeReceived;
 
         public XmlRpcStruct GetDeviceListAsyncResult(GetDeviceListAsyncResultParams p)
         {
@@ -110,14 +95,13 @@ namespace RpcApp.Domain
             }
             Console.WriteLine("=== End of ONRSEVENT ===");
 
-            RsEventReceived?.Invoke(new RsEventArgs
+            RsEventReceived?.Invoke(this, new RsEventArgs
             {
                 Guid = guid,
                 NameType = (string)dataEvents["NAMETYPE"],
                 Event = (int)dataEvents["EVENT"],
-                NameEvent = (string)dataEvents["NAMEEVENT"]
+                NameEvent = (string)dataEvents["NAMEEVENT"],
             });
-
 
             return GetBaseResponse();
         }
@@ -127,7 +111,7 @@ namespace RpcApp.Domain
             Console.WriteLine("===КЛЮЧ СЧИТАН===");
             Console.WriteLine(p.Result);
 
-            KeyCodeReceived?.Invoke(new KeyCodeEventArgs
+            KeyCodeReceived?.Invoke(this, new KeyCodeEventArgs
             {
                 KeyCode = p.Result
             });
@@ -149,29 +133,28 @@ namespace RpcApp.Domain
                 ["RESULT"] = "METHOD IS EXECUTE",
                 ["RESULTDATA"] = resultData
             };
-
             return response;
         }
 
         /// <summary>
-        /// Запуск сервера и его прослушивания
+        /// Запуск сервера и его прослушивания.
+        /// Рекомендуется использовать для листенера отдельный поток или асинхронный запуск
         /// </summary>
         
-        public static void StartListener()
+        public void StartListener()
         {
             //Необходимо для того чтобы не было ошибки с кодировкой
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            var service = new Server();
             var listener = new HttpListener();
             listener.Prefixes.Add("http://127.0.0.1:8095/");
             listener.Start();
+
             Console.WriteLine("Сервер запущен на http://127.0.0.1:8095/");
             Console.WriteLine();
             while (true)
             {
                 var context = listener.GetContext();
-                service.ProcessRequest(context);
+                this.ProcessRequest(context);
             }
 
         }

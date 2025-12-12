@@ -1,25 +1,23 @@
 ﻿using Horizon.XmlRpc.Core;
-using RpcApp.Domain.Structures;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RpcApp.Domain
 {
+    /// <summary>
+    /// Класс, содержащий все возможные операции с таблицами Orion
+    /// </summary>
     public class TablesManager
     {
         RequestSender client = new ();
 
-        /// <summary>Метод, который генерирует и отправляет запрос на добавление базовой конфигурации.
+        /// <summary>
+        /// Метод, который генерирует и отправляет запрос на добавление базовой конфигурации.
         /// Конфигурацию следует устанавливать до добавления в устройство сотрудников и паролей.
         /// Включает таблицы TimeWindows, Relays, Readers, Groups, AccessPoints, RdrAccessPoints и GroupAccesses.
         /// </summary>
+        /// <param name="guid">
+        /// жетон безопасности
+        /// </param>
+        
         public void SendBaseConfiguration( string guid)
         {
             List<XmlRpcStruct> tables = [];
@@ -61,9 +59,9 @@ namespace RpcApp.Domain
         }
 
 
-        /// <summary> Метод для добавления сотрудника и его пароля в устройство</summary>
-        /// <param name="guid"></param>
-        /// <param name="personId"></param>
+        /// <summary>
+        /// Метод для добавления сотрудника и его пароля в устройство
+        /// </summary>
         /// <example>
         /// Пример валидных данных для отправки запроса
         /// <code>
@@ -87,11 +85,13 @@ namespace RpcApp.Domain
             client.RefreshTablesData(guid, tables.ToArray());
         }
 
-        /// <summary>Метод для удаления сотруника и его пароля из устройства</summary>
+        /// <summary>
+        /// Метод для удаления сотруника и его пароля из устройства
+        /// </summary>
 
          public void DeletePersonWithPassword(string guid, int personId, string personName, string personSurname, string personMidName,
                                     int passwordId, int codeType, int config, int passwordIdOwner, int passwordGroupId, string start, string finish, int[] code)
-        {
+         {
             List<XmlRpcStruct> tables = [];
 
             XmlRpcStruct person = TablesManager.AddPerson(personId, personName, personSurname, personMidName);
@@ -101,9 +101,29 @@ namespace RpcApp.Domain
             tables.Add(CreateTable("Passwords", 2, [password]));
 
             client.RefreshTablesData(guid, tables.ToArray());
-        }
+         }
 
-
+        /// <summary>
+        /// Собирает данные в таблицу, готовую к передаче в метоод RefreshTablesData
+        /// </summary>
+        /// <param name="tableName">
+        /// Название таблицы
+        /// </param>
+        /// <param name="action">
+        /// действие; 0 - добавить, 1 - изменить, 2 - удалить
+        /// </param>
+        /// <param name="dataList">
+        /// Таблица с подготовленными строками для изменения
+        /// </param>
+        /// <example>
+        /// Пример использования
+        /// <code>
+        /// XmlRpcStruct relay1 = TablesManager.AddRelay(1, 3, 1, 1);
+        /// XmlRpcStruct relay2 = TablesManager.AddRelay(2, 3, 1, 2);
+        /// tables.Add(CreateTable("Relays", 0, [relay1, relay2]));
+        /// </code>
+        /// </example>
+        
         public XmlRpcStruct CreateTable(string tableName, int action, XmlRpcStruct[] dataList)
         {
             return new XmlRpcStruct
@@ -113,10 +133,6 @@ namespace RpcApp.Domain
                 ["Action"] = action
             };
         }
-
-
-
-
 
 
         public static XmlRpcStruct AddPerson(int id, string Name, string FirstName, string MidName)
@@ -158,6 +174,7 @@ namespace RpcApp.Domain
             };
             return timeWindow;
         }
+
 
         public static XmlRpcStruct AddGroup(int id, string name)
         {

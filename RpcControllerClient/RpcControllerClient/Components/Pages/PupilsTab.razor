@@ -3,10 +3,12 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.EntityFrameworkCore
 @using RpcControllerClient.Models
+@using RpcApp.Domain
 @using System.Text
 @inject RpcClientContext RpcClientContext;
 @inject ModalService ModalService;
 @inject ConfirmService ComfirmService;
+@inject Notifications notice;
 
 <Space Direction="SpaceDirection.Horizontal">
     <SpaceItem>
@@ -36,8 +38,19 @@
     </ActionColumn>
 </Table>
 @code {
-    //Ссылка на компонент Home
-    Home _home;
+
+    [Parameter]
+    public Home HomeComponent { get; set; }
+
+    [Parameter]
+    public string Guid { get; set; }
+
+
+    [Parameter]
+    public Server server { get; set; }
+
+    [Parameter]
+    public RequestSender requestSender { get; set; }
 
     ITable _pupilsTable;
     List<Pupils> _pupilsDataSource = new();
@@ -121,7 +134,6 @@
                     modalRef?.SetConfirmLoading(false);
                     return;
                 }
-
                 Pupils newPupil = new Pupils()
                 {
                     SurnamePupil = pupil.SurnamePupil,
@@ -141,9 +153,8 @@
 
                 _pupilsTable.ReloadData();
                 StateHasChanged();
-                DateTime dateTime = DateTime.Now;
-                _home.tablesManager.AddPersonWithPassword(_home.guid, newPupil.PupilsId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilsId, 4, 128, newPupil.PupilsId,
-                        3, dateTime.ToString(), newPupil.CardValidityPeriod.ToString(), HexToByteArray(newPupil.CardNumber));
+                HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilsId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilsId, 4, 128, newPupil.PupilsId,
+                            3, DateTime.Now.ToString(), newPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(newPupil.CardNumber));
             },
             OnCancel = async e =>
             {
@@ -201,7 +212,6 @@
     private void ReadingCard()
     {
         _isReadingCard = true;
-
         _cardReadingModalRef = ModalService.CreateModal(new ModalOptions
         {
             Title = "Считывание карты",
@@ -235,44 +245,52 @@
         pupilModel.CardNumber = $"{crcData:X2}" + cardNumber;
     }
 
-    public int[] HexToByteArray(string hexStr)
-    {
-        byte[] byteArray = Convert.FromHexString(hexStr);
-        int[] BytesInDexArray = new int[byteArray.Length];
-        foreach (byte b in byteArray)
-        {
-            int i = 0;
-            BytesInDexArray[i] = b;
-            i++;
-        }
-        BytesInDexArray = BytesInDexArray.Reverse().ToArray();
-        return BytesInDexArray;
-    }
+
 
     private async Task StartCardReadingMonitor()
     {
         string previousValue = "";
         int unchangedCount = 0;
-
-        while (_isReadingCard)
+        requestSender.ReadKeyCodeFromReader(Guid);
+        server.KeyCodeReceived += async (sender, args) =>
         {
-            await Task.Delay(100);
-
-            if (_scannedCardNumber != previousValue)
+            _scannedCardNumber = args.KeyCode;
+        };
+        if (_scannedCardNumber.Length == 16)
+        {
+            if (_isEditMode)
             {
-                previousValue = _scannedCardNumber;
-                unchangedCount = 0;
+                _editingPupil.CardNumber = _scannedCardNumber;
             }
-            else if (!string.IsNullOrEmpty(_scannedCardNumber))
+            else
             {
-                unchangedCount++;
-                if (unchangedCount >= 3)
+                pupil.CardNumber = _scannedCardNumber;
+            }
+            await CloseReadingCardModal();
+        }
+        else
+        {
+            while (_isReadingCard)
+            {
+                await Task.Delay(100);
+
+                if (_scannedCardNumber != previousValue)
                 {
-                    await OnCreateOrChangePupil();
-                    break;
+                    previousValue = _scannedCardNumber;
+                    unchangedCount = 0;
+                }
+                else if (!string.IsNullOrEmpty(_scannedCardNumber))
+                {
+                    unchangedCount++;
+                    if (unchangedCount >= 3)
+                    {
+                        await OnCreateOrChangePupil();
+                        break;
+                    }
                 }
             }
         }
+        server.KeyCodeReceived -= async (sender, args) =>{};
     }
 
     private async Task OnCreateOrChangePupil()
@@ -357,8 +375,10 @@
             .Where(p => p.PupilsId != delPupil.PupilsId)
             .ToList();
         _pupilsTotal = _pupilsDataSource.Count;
-        StateHasChanged();
         _pupilsTable.ReloadData();
+        StateHasChanged();
+        HomeComponent.tablesManager.DeletePersonWithPassword(Guid, delPupil.PupilsId, delPupil.NamePupil, delPupil.SurnamePupil, delPupil.PatronymicPupil, delPupil.PupilsId, 4, 128, delPupil.PupilsId,
+            3, DateTime.Now.ToString(), delPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(delPupil.CardNumber));
     }
 
     private async Task<bool> Comfirm(string message)

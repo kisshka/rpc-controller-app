@@ -239,36 +239,6 @@ namespace RpcApp.Domain.Structures
     }
 
     /// <summary>
-    /// Структура параметров метода SynchronizeOneKeyParams
-    /// </summary>
-    public struct SynchronizeOneKeyParams
-    {
-        [XmlRpcMember("GUID")]
-        public string guid;
-
-        [XmlRpcMember("IPSERVER")]
-        public string ipServer;
-
-        [XmlRpcMember("PORTSERVER")]
-        public int portServer;
-
-        [XmlRpcMember("METHODNAMEFORANSWER")]
-        public string methodNameForAnswer;
-
-        [XmlRpcMember("ID")]
-        public int id;
-
-        [XmlRpcMember("AUTOWRITING")]
-        public int autoWriting;
-
-        [XmlRpcMember("REWRITEDELETED")]
-        public int rewriteDeleted;
-
-        [XmlRpcMember("REWRITEBLOCKED")]
-        public int rewriteBlocked;
-    }
-
-    /// <summary>
     /// Структура параметров метода ReadKeyCodeFromReader - Считывание ключа со считывателя
     /// </summary>
     public struct ReadKeyCodeFromReaderParams {
@@ -366,11 +336,6 @@ namespace RpcApp.Domain.Structures
 
         [XmlRpcMember("ReaderAddress")]
         public int ReaderAddress;
-    }
-
-    public struct GetListMethodsParams() {
-
-        public string guid;
     }
 
     public struct RefreshTablesDataParams() {

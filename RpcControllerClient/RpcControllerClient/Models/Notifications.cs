@@ -36,5 +36,9 @@ namespace RpcControllerClient.Models
         {
             await Notices("Предупреждение", NotificationType.Warning, message);
         }
+        public async Task OnEvent(string message)
+        {
+            await Notices("Событие", NotificationType.Success, message);
+        }
     }
 }

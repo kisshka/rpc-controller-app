@@ -34,5 +34,18 @@ namespace RpcControllerClient.Models
             return result;
         }
 
+        public static int[] HexToByteArray(string hexStr)
+        {
+            byte[] byteArray = Convert.FromHexString(hexStr);
+            int[] BytesInDexArray = new int[byteArray.Length];
+            int i = 0;
+            foreach (byte b in byteArray)
+            {
+                BytesInDexArray[i] = b;
+                i++;
+            }
+            BytesInDexArray = BytesInDexArray.Reverse().ToArray();
+            return BytesInDexArray;
+        }
     }
 }

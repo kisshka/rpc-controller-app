@@ -11,17 +11,35 @@ class Program
     {
         // Необходимо для того чтобы не было ошибки с кодировкой
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        var server = new Server();
+        server.RsEventReceived += (sender, RsEventArgs) =>
+        {
+            Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.NameEvent}");
+        };
+
+
+        var serverThread = new Thread(() => server.StartListener());
+        serverThread.Start();
+
+        server.KeyCodeReceived += (sender, RsEventArgs) =>
+        {
+            Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.KeyCode}");
+        };
 
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
+
+        Console.ReadKey(true);
         //client.GetDevice(guid);
 
-        //client.GetDeviceListAsync();
+        client.GetDeviceListAsync();
 
-        //client.ReadKeyCodeFromReader(guid);
+        Console.ReadKey(true);
 
-        /*        client.GetPasswordListWithStatus(guid);
+        client.ReadKeyCodeFromReader(guid);
+
+        /*client.GetPasswordListWithStatus(guid);
                 client.ReadDeviceKeyList(guid);*/
 
         //client.SynchronizeOneKey(guid, 369);

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ideviceservice_0',['IDeviceService',['../interface_rpc_app_1_1_domain_1_1_i_device_service.html',1,'RpcApp::Domain']]],
-  ['irpcproxy_1',['IRpcProxy',['../interface_rpc_app_1_1_domain_1_1_i_rpc_proxy.html',1,'RpcApp::Domain']]]
+  ['adress_0',['Adress',['../struct_rpc_app_1_1_domain_1_1_structures_1_1_adress.html',1,'RpcApp::Domain::Structures']]],
+  ['adress2_1',['Adress2',['../struct_rpc_app_1_1_domain_1_1_structures_1_1_adress2.html',1,'RpcApp::Domain::Structures']]]
 ];

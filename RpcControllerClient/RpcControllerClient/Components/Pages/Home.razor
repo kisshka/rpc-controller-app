@@ -6,6 +6,7 @@
 @using RpcApp.Domain
 @using RpcControllerClient.Models
 @inject RpcClientContext RpcClientContext;
+@inject Notifications notice;
 
 
 <PageTitle>Home</PageTitle>
@@ -20,7 +21,7 @@
                 <DeviceTab @ref="_deviceTab"/>
             </TabPane>
             <TabPane Tab="Ученики">
-                <PupilsTab @ref="_pupilsTab" />
+                <PupilsTab @ref="_pupilsTab" HomeComponent="this" Guid="guid" server="server" requestSender="requestSender"/>
             </TabPane>
             <TabPane Tab="Посещения" Key="visitings">
                 <VisitingsTab @ref="_visitingsTab" />
@@ -32,7 +33,8 @@
 @code {
     public string? guid;
     public TablesManager tablesManager = new TablesManager();
-
+    RequestSender requestSender = new RequestSender();
+    Server server = new Server();
 
     private DeviceTab _deviceTab;
     private VisitingsTab _visitingsTab;
@@ -51,18 +53,30 @@
             _initialized = true;
 
             alert = null;
-            RequestSender requestSender = new RequestSender();
             try
             {
+                server.RsEventReceived += async (sender, RsEventArgs) =>
+                {
+                // if (RsEventArgs.NameEvent == "ПРОХОД") {
+                //     int id = RsEventArgs.IdPerson;
+                //     var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == id);
+                //     string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
+                //     await notice.OnEvent( $" {RsEventArgs.NameEvent} \n{fio}");
+                // }
+                // else
+                    await notice.OnEvent($" {RsEventArgs.NameEvent}");
+                };
+
+                var serverThread = new Thread(() => server.StartListener());
+                serverThread.Start();
                 guid = requestSender.SetSubscribe();
                 requestSender.SetConfigurationHwSrv(guid);
                 tablesManager.SendBaseConfiguration(guid);
-                DateTime dateTime = DateTime.Now;
-                // foreach (var pupil in RpcClientContext.Pupils)
-                // {
-                //     tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId, 
-                //         3, dateTime.ToString(), pupil.CardValidityPeriod.ToString(), _pupilsTab.HexToByteArray(pupil.CardNumber));
-                // }
+                foreach (var pupil in RpcClientContext.Pupils)
+                {
+                    tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId,
+                    3, DateTime.Now.ToString(), pupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(pupil.CardNumber));
+                }
                 alert = AlertSuccess();
             }
             catch (Exception e)
@@ -86,7 +100,7 @@
         }
         if (key == "pupils" && _pupilsTab != null)
         {
-            
+            await _pupilsTab.LoadPupilsData();
         }
     }
 
