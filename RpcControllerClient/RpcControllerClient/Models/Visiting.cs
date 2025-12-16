@@ -17,12 +17,16 @@ namespace RpcControllerClient.Models
 
         [Required]
         [Display(Name = "Направление")]
-        public bool Direction {  get; set; }
+        public bool Direction { get; set; }
 
-        public int DevicesId { get; set; }
-        [ForeignKey(nameof(DevicesId))]
-        public Devices Devices { get; set; }
+        [Required]
+        public int DeviceId { get; set; }
+        [ForeignKey(nameof(DeviceId))]
+        public Devices? Device { get; set; }
 
-        public List<Pupils> Pupils { get; set; } 
+        [Required]
+        public int PupilId { get; set; }
+        [ForeignKey(nameof(PupilId))]
+        public Pupils? Pupil { get; set; }
     }
 }

@@ -25,6 +25,10 @@ namespace RpcApp.Domain
 
         [XmlRpcMethod("ONINITIATIVE")]
         XmlRpcStruct OnInitiative(XmlRpcStruct p);
+
+        [XmlRpcMethod("ONCHANGESTATEELEMENTS")]
+        XmlRpcStruct OnChangeStateElements(XmlRpcStruct p);
+
     }
 
 
@@ -66,6 +70,7 @@ namespace RpcApp.Domain
         public event EventHandler<RsEventArgs> RsEventReceived;
         public event EventHandler<KeyCodeEventArgs> KeyCodeReceived;
         public event EventHandler<DeviceDataEventArgs> DeviceDataReceived;
+        public event EventHandler<OnChangeStateElementsArgs> ChangeElementsReceived;
 
         public XmlRpcStruct GetDeviceListAsyncResult(XmlRpcStruct p)
         {
@@ -187,6 +192,17 @@ namespace RpcApp.Domain
 
         public XmlRpcStruct GetDeviceKeyList(XmlRpcStruct p)
         {
+            return GetBaseResponse();
+        }
+
+        public XmlRpcStruct OnChangeStateElements(XmlRpcStruct p)
+        {
+
+            ChangeElementsReceived?.Invoke(this, new OnChangeStateElementsArgs
+            {
+                MethodName = "OnChangeStateElements"
+            });;
+
             return GetBaseResponse();
         }
 

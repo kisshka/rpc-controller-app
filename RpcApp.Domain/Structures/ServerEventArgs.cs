@@ -21,6 +21,14 @@ namespace RpcApp.Domain.Structures
     }
 
     /// <summary>
+    /// Поля которые передаются подписанным на событие OnChangeStateElements клиентам
+    /// </summary>
+    public class OnChangeStateElementsArgs : EventArgs
+    {
+        public string MethodName { get; set; }
+    }
+
+    /// <summary>
     /// Поля которые передаются подписанным на событие KeyCodeReceived клиентам
     /// </summary>
     public class KeyCodeEventArgs : EventArgs

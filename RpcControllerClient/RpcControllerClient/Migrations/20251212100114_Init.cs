@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RpcControllerClient.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialize : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,32 +15,32 @@ namespace RpcControllerClient.Migrations
                 name: "Devices",
                 columns: table => new
                 {
-                    DevicesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    DeviceId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DeviceName = table.Column<string>(type: "TEXT", nullable: false),
                     DeviceStatus = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Devices", x => x.DevicesId);
+                    table.PrimaryKey("PK_Devices", x => x.DeviceId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Pupils",
                 columns: table => new
                 {
-                    PupilsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    PupilId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SurnamePupil = table.Column<string>(type: "TEXT", nullable: false),
                     NamePupil = table.Column<string>(type: "TEXT", nullable: false),
-                    PatronymicPupil = table.Column<string>(type: "TEXT", nullable: false),
+                    PatronymicPupil = table.Column<string>(type: "TEXT", nullable: true),
                     ClassNumber = table.Column<string>(type: "TEXT", nullable: false),
                     CardValidityPeriod = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CardNumber = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pupils", x => x.PupilsId);
+                    table.PrimaryKey("PK_Pupils", x => x.PupilId);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,75 +51,48 @@ namespace RpcControllerClient.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     VisitingDateTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Direction = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DevicesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    DeviceId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PupilId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Visitings", x => x.VisitingId);
                     table.ForeignKey(
-                        name: "FK_Visitings_Devices_DevicesId",
-                        column: x => x.DevicesId,
+                        name: "FK_Visitings_Devices_DeviceId",
+                        column: x => x.DeviceId,
                         principalTable: "Devices",
-                        principalColumn: "DevicesId",
+                        principalColumn: "DeviceId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VisitingPupils",
-                columns: table => new
-                {
-                    VisitingPupilsId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PupilsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    VisitingId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VisitingPupils", x => x.VisitingPupilsId);
                     table.ForeignKey(
-                        name: "FK_VisitingPupils_Pupils_PupilsId",
-                        column: x => x.PupilsId,
+                        name: "FK_Visitings_Pupils_PupilId",
+                        column: x => x.PupilId,
                         principalTable: "Pupils",
-                        principalColumn: "PupilsId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VisitingPupils_Visitings_VisitingId",
-                        column: x => x.VisitingId,
-                        principalTable: "Visitings",
-                        principalColumn: "VisitingId",
+                        principalColumn: "PupilId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_VisitingPupils_PupilsId",
-                table: "VisitingPupils",
-                column: "PupilsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VisitingPupils_VisitingId",
-                table: "VisitingPupils",
-                column: "VisitingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Visitings_DevicesId",
+                name: "IX_Visitings_DeviceId",
                 table: "Visitings",
-                column: "DevicesId");
+                column: "DeviceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Visitings_PupilId",
+                table: "Visitings",
+                column: "PupilId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "VisitingPupils");
-
-            migrationBuilder.DropTable(
-                name: "Pupils");
-
-            migrationBuilder.DropTable(
                 name: "Visitings");
 
             migrationBuilder.DropTable(
                 name: "Devices");
+
+            migrationBuilder.DropTable(
+                name: "Pupils");
         }
     }
 }

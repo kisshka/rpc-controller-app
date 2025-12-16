@@ -17,11 +17,11 @@
     }
     <div class="table">
         <Tabs OnTabClick="OnTabClick">
-            <TabPane Tab="Устройства" >
-                <DeviceTab @ref="_deviceTab"/>
+            <TabPane Tab="Устройства">
+                <DeviceTab @ref="_deviceTab" />
             </TabPane>
             <TabPane Tab="Ученики">
-                <PupilsTab @ref="_pupilsTab" HomeComponent="this" Guid="guid" server="server" requestSender="requestSender"/>
+                <PupilsTab @ref="_pupilsTab" HomeComponent="this" Guid="guid" server="server" requestSender="requestSender" />
             </TabPane>
             <TabPane Tab="Посещения" Key="visitings">
                 <VisitingsTab @ref="_visitingsTab" />
@@ -55,26 +55,123 @@
             alert = null;
             try
             {
-                server.RsEventReceived += async (sender, RsEventArgs) =>
+                server.DeviceDataReceived += async (sender, args) =>
                 {
-                // if (RsEventArgs.NameEvent == "ПРОХОД") {
-                //     int id = RsEventArgs.IdPerson;
-                //     var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilsId == id);
-                //     string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
-                //     await notice.OnEvent( $" {RsEventArgs.NameEvent} \n{fio}");
-                // }
-                // else
-                    await notice.OnEvent($" {RsEventArgs.NameEvent}");
+                    if (args.ComPorts.Count != 0)
+                    {
+                        foreach (var port in args.ComPorts)
+                        {
+                            foreach (var controller in port.Controllers)
+                            {
+                                foreach (var rele in controller.Relays)
+                                {
+                                    if (rele.Id == 0)
+                                        break;
+                                    var state = false;
+                                    if (rele.State == 251 || rele.State == 401)
+                                        state = true;
+                                    Devices newDevice = new Devices()
+                                    {
+                                        DeviceId = rele.Id,
+                                        DeviceName = $"Турникет {rele.Address}",
+                                        DeviceStatus = state
+                                    };
+                                    var device = RpcClientContext.Devices.FirstOrDefault(d => d.DeviceId == newDevice.DeviceId);
+                                    bool exist = RpcClientContext.Devices.Any(d => d.DeviceId == newDevice.DeviceId);
+                                    if (!exist)
+                                    {
+                                        RpcClientContext.Devices.Add(newDevice);
+                                        RpcClientContext.SaveChanges();
+                                    }
+                                    else if (device.DeviceStatus != newDevice.DeviceStatus)
+                                    {
+                                        device.DeviceStatus = newDevice.DeviceStatus;
+                                        RpcClientContext.SaveChanges();
+                                        var index = _deviceTab._devicesDataSource.FindIndex(d => d.DeviceId == newDevice.DeviceId);
+
+                                        if (index >= 0)
+                                        {
+                                            _deviceTab._devicesDataSource[index] = device;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 };
 
+                // server.ChangeElementsReceived += async (sender, args) =>
+                // {
+                //     requestSender.GetDeviceListAsync();
+                // };
+
+                server.RsEventReceived += async (sender, RsEventArgs) =>
+                {
+                    if (RsEventArgs.NameEvent == "ПОТЕРЯН КОНТАКТ С УСТРОЙСТВОМ")
+                    {
+                        await InvokeAsync(async () =>
+                        {
+                            foreach (var device in RpcClientContext.Devices)
+                            {
+                                device.DeviceStatus = false;
+                                RpcClientContext.SaveChanges();
+                                var index = _deviceTab._devicesDataSource.FindIndex(d => d.DeviceId == device.DeviceId);
+                                if (index >= 0)
+                                {
+                                    _deviceTab._devicesDataSource[index] = device;
+                                }
+                            }
+                            _deviceTab._devicesTable.ReloadData();
+                            await notice.OnEvent($" {RsEventArgs.NameEvent}");
+                        });
+                    }
+                    else if (RsEventArgs.NameEvent == "ПРОХОД")
+                    {
+                        await InvokeAsync(async () =>
+                        {
+                            int id = RsEventArgs.IdPerson;
+                            if (id != -1)
+                            {
+                                var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilId == id);
+                                string fio = $"{pupil.SurnamePupil} {pupil.NamePupil[0]}. {pupil.PatronymicPupil[0]}.";
+                                Visiting newVisiting = new Visiting()
+                                {
+                                    VisitingDateTime = DateTime.Now,
+                                    Direction = true,
+                                    DeviceId = RsEventArgs.Device,
+                                    PupilId = pupil.PupilId
+                                };
+                                await notice.OnEvent($" {RsEventArgs.NameEvent} \n {fio}");
+                                RpcClientContext.Visitings.Add(newVisiting);
+                                RpcClientContext.SaveChanges();
+                                if (_visitingsTab != null)
+                                {
+                                    _visitingsTab._visitingsTable.ReloadData();
+                                }
+
+                                StateHasChanged();
+                            }
+                            else
+                            {
+                                await notice.OnWarning("Попытка прохода");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        await notice.OnEvent($" {RsEventArgs.NameEvent}");
+                    }
+
+                };
                 var serverThread = new Thread(() => server.StartListener());
                 serverThread.Start();
                 guid = requestSender.SetSubscribe();
                 requestSender.SetConfigurationHwSrv(guid);
+                requestSender.GetDeviceListAsync();
                 tablesManager.SendBaseConfiguration(guid);
                 foreach (var pupil in RpcClientContext.Pupils)
                 {
-                    tablesManager.AddPersonWithPassword(guid, pupil.PupilsId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilsId, 4, 128, pupil.PupilsId,
+                    tablesManager.AddPersonWithPassword(guid, pupil.PupilId, pupil.NamePupil, pupil.SurnamePupil, pupil.PatronymicPupil, pupil.PupilId, 4, 128, pupil.PupilId,
                     3, DateTime.Now.ToString(), pupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(pupil.CardNumber));
                 }
                 alert = AlertSuccess();
@@ -87,6 +184,7 @@
             finally
             {
                 await LoadInitialData();
+                _deviceTab._devicesTable.ReloadData();
                 StateHasChanged();
             }
         }

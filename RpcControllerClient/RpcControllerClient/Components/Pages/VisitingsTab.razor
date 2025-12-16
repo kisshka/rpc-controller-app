@@ -19,18 +19,17 @@
     </PropertyColumn>
     <PropertyColumn Title="Время посещения" Property="c => c.VisitingDateTime">
         @{
-            <p>@context.VisitingDateTime.ToString("HH:ss")</p>
+            <p>@context.VisitingDateTime.ToString("HH:mm:ss")</p>
         }
     </PropertyColumn>
-    <PropertyColumn Title="Ф.И.О." Property="c => c.Pupils">
-        @{
-            foreach (var p in context.Pupils)
-            {
-
-                <p>@_home.GetShortName(p)</p>
+    @{
+        var pupil = RpcClientContext.Pupils.FirstOrDefault(p => p.PupilId == context.PupilId);
+        <PropertyColumn Title="Ф.И.О." Property="c => c.Pupil">
+            @{
+                <p>@_home.GetShortName(pupil)</p>
             }
-        }
-    </PropertyColumn>
+        </PropertyColumn>
+    }
     <PropertyColumn Property="c => c.Direction">
         @{
             var direct = "Выход";
@@ -41,13 +40,13 @@
             <p>@direct</p>
         }
     </PropertyColumn>
-    <PropertyColumn Property="c => c.Devices.DevicesId"></PropertyColumn>
+    <PropertyColumn Property="c => c.DeviceId"></PropertyColumn>
 </Table>
 
 @code {
     Home _home = new Home();
 
-    ITable _visitingsTable;
+    public ITable _visitingsTable;
 
     List<Visiting> _visitingsDataSource = new();
 
@@ -64,8 +63,8 @@
     public async Task LoadVisitingsData(QueryModel<Visiting> query = null)
     {
         var queryable = RpcClientContext.Visitings
-        .Include(v => v.Pupils)
-        .Include(v => v.Devices)
+        .Include(v => v.Pupil)
+        .Include(v => v.Device)
         .AsQueryable();
 
         _visitingsTotal = await queryable.CountAsync();

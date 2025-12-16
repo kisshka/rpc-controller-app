@@ -11,7 +11,7 @@
     </SpaceItem>
 </Space>
 <Table @ref="_devicesTable" TItem="Devices" PageSize="5" Total="_devicesTotal" DataSource="_devicesDataSource" OnChange="OnDevicesChange">
-    <PropertyColumn Property="c => c.DevicesId"></PropertyColumn>
+    <PropertyColumn Property="c => c.DeviceId"></PropertyColumn>
     <PropertyColumn Property="c => c.DeviceName"></PropertyColumn>
     <PropertyColumn Property="c => c.DeviceStatus">
         @{
@@ -26,9 +26,9 @@
 </Table>
 
 @code {
-    ITable _devicesTable;
+    public ITable _devicesTable;
 
-    List<Devices> _devicesDataSource = new();
+    public List<Devices> _devicesDataSource = new();
 
     int _devicesTotal;
 
