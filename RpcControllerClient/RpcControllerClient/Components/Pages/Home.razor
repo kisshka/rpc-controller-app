@@ -57,53 +57,60 @@
             {
                 server.DeviceDataReceived += async (sender, args) =>
                 {
-                    if (args.ComPorts.Count != 0)
+                    await InvokeAsync(async () =>
                     {
-                        foreach (var port in args.ComPorts)
+                        if (args.ComPorts.Count != 0)
                         {
-                            foreach (var controller in port.Controllers)
+                            foreach (var port in args.ComPorts)
                             {
-                                foreach (var rele in controller.Relays)
+                                foreach (var controller in port.Controllers)
                                 {
-                                    if (rele.Id == 0)
-                                        break;
-                                    var state = false;
-                                    if (rele.State == 251 || rele.State == 401)
-                                        state = true;
-                                    Devices newDevice = new Devices()
+                                    foreach (var rele in controller.Relays)
                                     {
-                                        DeviceId = rele.Id,
-                                        DeviceName = $"Турникет {rele.Address}",
-                                        DeviceStatus = state
-                                    };
-                                    var device = RpcClientContext.Devices.FirstOrDefault(d => d.DeviceId == newDevice.DeviceId);
-                                    bool exist = RpcClientContext.Devices.Any(d => d.DeviceId == newDevice.DeviceId);
-                                    if (!exist)
-                                    {
-                                        RpcClientContext.Devices.Add(newDevice);
-                                        RpcClientContext.SaveChanges();
-                                    }
-                                    else if (device.DeviceStatus != newDevice.DeviceStatus)
-                                    {
-                                        device.DeviceStatus = newDevice.DeviceStatus;
-                                        RpcClientContext.SaveChanges();
-                                        var index = _deviceTab._devicesDataSource.FindIndex(d => d.DeviceId == newDevice.DeviceId);
-
-                                        if (index >= 0)
+                                        if (rele.Id == 0)
+                                            break;
+                                        var state = false;
+                                        if (rele.State == 251 || rele.State == 401)
+                                            state = true;
+                                        Devices newDevice = new Devices()
                                         {
-                                            _deviceTab._devicesDataSource[index] = device;
+                                            DeviceId = rele.Id,
+                                            DeviceName = $"Турникет {rele.Address}",
+                                            DeviceStatus = state
+                                        };
+                                        var device = RpcClientContext.Devices.FirstOrDefault(d => d.DeviceId == newDevice.DeviceId);
+                                        bool exist = RpcClientContext.Devices.Any(d => d.DeviceId == newDevice.DeviceId);
+                                        if (!exist)
+                                        {
+                                            RpcClientContext.Devices.Add(newDevice);
+                                            RpcClientContext.SaveChanges();
+                                        }
+                                        else if (device.DeviceStatus != newDevice.DeviceStatus)
+                                        {
+                                            device.DeviceStatus = newDevice.DeviceStatus;
+                                            RpcClientContext.SaveChanges();
+                                            var index = _deviceTab._devicesDataSource.FindIndex(d => d.DeviceId == newDevice.DeviceId);
+
+                                            if (index >= 0)
+                                            {
+                                                _deviceTab._devicesDataSource[index] = device;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                    });
                 };
 
-                // server.ChangeElementsReceived += async (sender, args) =>
-                // {
-                //     requestSender.GetDeviceListAsync();
-                // };
+                server.ChangeElementsReceived += async (sender, args) =>
+                {
+                    await InvokeAsync(async () =>
+                    {
+                        requestSender.GetDeviceListAsync();
+                        _deviceTab._devicesTable.ReloadData();
+                    });
+                };
 
                 server.RsEventReceived += async (sender, RsEventArgs) =>
                 {
