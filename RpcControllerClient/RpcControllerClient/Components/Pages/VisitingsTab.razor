@@ -7,7 +7,7 @@
 
 <Space Direction="SpaceDirection.Horizontal">
     <SpaceItem>
-        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" />
+        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" OnSearch="OnVisitingsSearch" @bind-Value="@_visitingsSearchString" />
     </SpaceItem>
 </Space>
 <Table @ref="_visitingsTable" TItem="Visiting" PageSize="5" Total="_visitingsTotal" DataSource="_visitingsDataSource" OnChange="OnVisitingsChange">
@@ -51,13 +51,27 @@
     List<Visiting> _visitingsDataSource = new();
 
     int _visitingsTotal;
-
+    private string _visitingsSearchString = "";
     private QueryModel<Visiting> _currentVisitingQuery;
 
     async Task OnVisitingsChange(QueryModel<Visiting> query)
     {
         _currentVisitingQuery = query;
         await LoadVisitingsData(query);
+    }
+
+    public async Task OnVisitingsSearch()
+    {
+        if (_currentVisitingQuery != null)
+        {
+            await LoadVisitingsData(_currentVisitingQuery);
+        }
+        else
+        {
+            await LoadVisitingsData();
+        }
+
+        StateHasChanged();
     }
 
     public async Task LoadVisitingsData(QueryModel<Visiting> query = null)
@@ -67,6 +81,10 @@
         .Include(v => v.Device)
         .AsQueryable();
 
+        if (!string.IsNullOrWhiteSpace(_visitingsSearchString))
+        {
+            queryable = queryable.Where(d => d.Pupil.SurnamePupil.Contains(_visitingsSearchString));
+        }
         _visitingsTotal = await queryable.CountAsync();
 
         if (query != null)
