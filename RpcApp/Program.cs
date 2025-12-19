@@ -16,9 +16,7 @@ class Program
         var server = new Server();
         server.RsEventReceived += (sender, RsEventArgs) =>
         {
-            Console.WriteLine("Тип устройства:" + RsEventArgs.Type);
-            Console.WriteLine("АДрес устройства:" + RsEventArgs.Device +" " + RsEventArgs.Rele);
-            Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.NameEvent}");
+            Console.WriteLine($"Клиент получил сообщение - {RsEventArgs.NameEvent}");
         };
 
 
@@ -27,11 +25,10 @@ class Program
 
         server.KeyCodeReceived += (sender, RsEventArgs) =>
         {
-            Console.WriteLine($"Клиент: получил сообщение - {RsEventArgs.KeyCode}");
+            Console.WriteLine($"Клиент получил код - {RsEventArgs.KeyCode}");
         };
 
         server.DeviceDataReceived += (sender, args) => {
-            Console.WriteLine($"\n=== ПОЛУЧЕН СПИСОК УСТРОЙСТВ ===");
 
             foreach (var port in args.ComPorts)
             {
@@ -54,10 +51,11 @@ class Program
         var client = new RequestSender();
         string guid = client.SetSubscribe();
         client.SetConfigurationHwSrv(guid);
+        //client.CloseScribe(guid);
 
-        client.GetDeviceListAsync();
+        //client.GetDeviceListAsync();
 
-        Console.ReadKey(true);
+        //Console.ReadKey(true);
 
         //client.ReadKeyCodeFromReader(guid);
 
@@ -66,17 +64,17 @@ class Program
 
         //client.SynchronizeOneKey(guid, 369);
 
-        Console.ReadKey(true);
-        TablesManager tablesManager = new();
+                TablesManager tablesManager = new();
 
-        tablesManager.SendBaseConfiguration(guid);
+                tablesManager.SendBaseConfiguration(guid);
 
-         Console.ReadKey(true);
-        tablesManager.AddPersonWithPassword( guid,1, "Alexei", " ", " ", 1, 4, 128, 1, 3, "04.12.2025 13:02:02", "04.12.2026 23:59:00", [1, 164, 218, 191, 220, 0, 0, 247]);
+        Console.WriteLine("Добавление сотрудника");
+        tablesManager.AddPersonWithPassword(guid, 1, "Alexei", " ", " ", 1, 4, 128, 1, 3, "04.12.2025 13:02:02", "04.12.2026 23:59:00", [1, 164, 218, 191, 220, 0, 0, 247]);
 
-        Console.ReadKey(true);
+        //Console.ReadKey(true);
+        Console.WriteLine("Удаление сотрудника");
         tablesManager.DeletePersonWithPassword(guid, 1, "Alexei", " ", " ", 1, 4, 128, 1, 3, "04.12.2025 13:02:02", "04.12.2026 23:59:00", [1, 164, 218, 191, 220, 0, 0, 247]);
-
+        
 
     }
 }
