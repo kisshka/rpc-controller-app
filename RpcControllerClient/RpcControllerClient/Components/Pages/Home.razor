@@ -178,6 +178,20 @@
             }
             catch (Exception e)
             {
+                if (guid == null)
+                {
+                    foreach (var device in RpcClientContext.Devices)
+                    {
+                        device.DeviceStatus = false;
+                        RpcClientContext.SaveChanges();
+                        var index = _deviceTab._devicesDataSource.FindIndex(d => d.DeviceId == device.DeviceId);
+
+                        if (index >= 0)
+                        {
+                            _deviceTab._devicesDataSource[index] = device;
+                        }
+                    }
+                }
                 alert = AlertError();
                 Console.WriteLine(e);
             }

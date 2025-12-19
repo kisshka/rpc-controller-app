@@ -12,7 +12,7 @@
 
 <Space Direction="SpaceDirection.Horizontal">
     <SpaceItem>
-        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" />
+        <Search Placeholder="Введите Ф.И.О ученика" EnterButton="true" OnSearch="OnPupilsSearch" @bind-Value="@_pupilSearchString" />
     </SpaceItem>
     <Button Type="ButtonType.Primary" OnClick="PupilCreateModal">
         Добавить ученика
@@ -55,6 +55,7 @@
     ITable _pupilsTable;
     List<Pupils> _pupilsDataSource = new();
     int _pupilsTotal;
+    private string _pupilSearchString = "";
     private QueryModel<Pupils> _currentPupilsQuery;
 
     async Task OnPupilsChange(QueryModel<Pupils> query)
@@ -63,9 +64,28 @@
         await LoadPupilsData(query);
     }
 
+    public async Task OnPupilsSearch()
+    {
+        if (_currentPupilsQuery != null)
+        {
+            await LoadPupilsData(_currentPupilsQuery);
+        }
+        else
+        {
+            await LoadPupilsData();
+        }
+
+        StateHasChanged();
+    }
+
     public async Task LoadPupilsData(QueryModel<Pupils> query = null)
     {
         var queryable = RpcClientContext.Pupils.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(_pupilSearchString))
+        {
+            queryable = queryable.Where(d => d.SurnamePupil.Contains(_pupilSearchString));
+        }
 
         _pupilsTotal = await queryable.CountAsync();
 
