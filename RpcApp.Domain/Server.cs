@@ -71,6 +71,7 @@ namespace RpcApp.Domain
         public event EventHandler<KeyCodeEventArgs> KeyCodeReceived;
         public event EventHandler<DeviceDataEventArgs> DeviceDataReceived;
         public event EventHandler<OnChangeStateElementsArgs> ChangeElementsReceived;
+        public event EventHandler<XmlRpcStruct> InitiativeReceived;
 
         public XmlRpcStruct GetDeviceListAsyncResult(XmlRpcStruct p)
         {
@@ -209,6 +210,11 @@ namespace RpcApp.Domain
         public XmlRpcStruct OnInitiative (XmlRpcStruct p)
         {
             Console.WriteLine("===ПРИШЛО СОБЫТИЕ OnInitiative ===");
+
+            InitiativeReceived?.Invoke(this, new XmlRpcStruct
+            {
+                
+            });
 
             return GetBaseResponse();
         }

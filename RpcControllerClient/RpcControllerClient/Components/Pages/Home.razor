@@ -95,6 +95,7 @@
                                             {
                                                 _deviceTab._devicesDataSource[index] = device;
                                             }
+                                            _deviceTab._devicesTable.ReloadData();
                                         }
                                     }
                                 }
@@ -133,7 +134,7 @@
                         });
                     }
                     else if (RsEventArgs.NameEvent == "ПРОХОД")
-                    {
+                    { 
                         await InvokeAsync(async () =>
                         {
                             int id = RsEventArgs.IdPerson;
@@ -148,7 +149,19 @@
                                     DeviceId = RsEventArgs.Device,
                                     PupilId = pupil.PupilId
                                 };
-                                await notice.OnEvent($" {RsEventArgs.NameEvent} \n {fio}");
+                                if (_pupilsTab != null)
+                                {
+                                    if (_pupilsTab._isReadingCard)
+                                    {
+                                        Console.WriteLine("Считывается карта");
+                                    }
+                                    else
+                                        await notice.OnEvent($" {RsEventArgs.NameEvent} \n {fio}");
+                                }
+                                else
+                                {
+                                    await notice.OnEvent($" {RsEventArgs.NameEvent} \n {fio}");
+                                }
                                 RpcClientContext.Visitings.Add(newVisiting);
                                 RpcClientContext.SaveChanges();
                                 if (_visitingsTab != null)
@@ -163,6 +176,7 @@
                                 await notice.OnWarning("Попытка прохода");
                             }
                         });
+                        
                     }
                     else
                     {
@@ -170,6 +184,11 @@
                     }
 
                 };
+                server.InitiativeReceived += async (sender, args) =>
+                {
+                    await notice.OnError("Неизвестный код. Доступ запрещён");
+                };
+
                 var serverThread = new Thread(() => server.StartListener());
                 serverThread.Start();
                 guid = requestSender.SetSubscribe();

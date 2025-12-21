@@ -145,10 +145,10 @@
         ModalRef modalRef = default;
         modalRef = ModalService.CreateModal(new()
         {
+            Title = "Добавление ученика",
             Content = FormTemplate(),
             OnOk = async e =>
             {
-                modalRef?.SetConfirmLoading(true);
                 if (!_form.Validate())
                 {
                     modalRef?.SetConfirmLoading(false);
@@ -163,18 +163,28 @@
                     CardNumber = pupil.CardNumber,
                     CardValidityPeriod = pupil.CardValidityPeriod
                 };
-                RpcClientContext.Pupils.Add(newPupil);
-                RpcClientContext.SaveChanges();
+                var existpupil = RpcClientContext.Pupils.FirstOrDefault(p => p.CardNumber == newPupil.CardNumber);
+                if (existpupil != null)
+                {
+                    await notice.OnError("Пользователь с таким номером карты уже существует");
 
-                _form.Submit();
+                }
+                else
+                {
+                    modalRef?.SetConfirmLoading(true);
+                    RpcClientContext.Pupils.Add(newPupil);
+                    RpcClientContext.SaveChanges();
 
-                await modalRef.CloseAsync();
-                _form.Reset();
+                    _form.Submit();
 
-                _pupilsTable.ReloadData();
-                StateHasChanged();
-                HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilId, 4, 128, newPupil.PupilId,
-                            3, DateTime.Now.ToString(), newPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(newPupil.CardNumber));
+                    await modalRef.CloseAsync();
+                    _form.Reset();
+
+                    _pupilsTable.ReloadData();
+                    StateHasChanged();
+                    HomeComponent.tablesManager.AddPersonWithPassword(Guid, newPupil.PupilId, newPupil.NamePupil, newPupil.SurnamePupil, newPupil.PatronymicPupil, newPupil.PupilId, 4, 128, newPupil.PupilId,
+                                3, DateTime.Now.ToString(), newPupil.CardValidityPeriod.ToString(), CRC8.HexToByteArray(newPupil.CardNumber));
+                }
             },
             OnCancel = async e =>
             {
@@ -226,7 +236,7 @@
     }
 
     private ModalRef _cardReadingModalRef;
-    private bool _isReadingCard = false;
+    public bool _isReadingCard = false;
     private string _scannedCardNumber = "";
 
     private void ReadingCard()
@@ -355,11 +365,10 @@
         _scannedCardNumber = "";
         return
         @<div>
-            <p>Поднесите карту к считывателю...</p>
             <div style="text-align: center; margin: 20px 0;">
                 <Icon Type="credit-card" Style="font-size: 48px; color: #1890ff;" />
             </div>
-            <Alert Message="Ожидание карты..." Type="AlertType.Info" />
+            <Alert Message="Приложите карту..." Type="AlertType.Info" />
 
             <div>
                 <Input @bind-Value="@_scannedCardNumber" AutoFocus="true" />
@@ -409,7 +418,7 @@
 
     private async Task<bool> Comfirm(string message)
     {
-        return await ComfirmService.Show(message, "Confirm", ConfirmButtons.YesNo, ConfirmIcon.Warning) == ConfirmResult.Yes;
+        return await ComfirmService.Show(message, "Подтверждение", ConfirmButtons.YesNo, ConfirmIcon.Warning) == ConfirmResult.Yes;
     }
 
     private ModalRef _editModalRef;
@@ -437,39 +446,47 @@
             Content = EditFormTemplate(),
             OnOk = async e =>
             {
-                _editModalRef?.SetConfirmLoading(true);
+               
 
                 if (!_form.Validate())
                 {
                     _editModalRef?.SetConfirmLoading(false);
                     return;
                 }
-
-                var existingPupil = await RpcClientContext.Pupils
-                    .FirstOrDefaultAsync(p => p.PupilId == _editingPupil.PupilId);
-
-                if (existingPupil != null)
+                var equalCardNumber = RpcClientContext.Pupils.FirstOrDefault(p => p.CardNumber == _editingPupil.CardNumber 
+                    && p.PupilId != _editingPupil.PupilId);
+                if (equalCardNumber != null)
                 {
-                    existingPupil.SurnamePupil = _editingPupil.SurnamePupil;
-                    existingPupil.NamePupil = _editingPupil.NamePupil;
-                    existingPupil.PatronymicPupil = _editingPupil.PatronymicPupil;
-                    existingPupil.ClassNumber = _editingPupil.ClassNumber;
-                    existingPupil.CardNumber = _editingPupil.CardNumber;
-                    existingPupil.CardValidityPeriod = _editingPupil.CardValidityPeriod;
-
-                    await RpcClientContext.SaveChangesAsync();
-
-                    var index = _pupilsDataSource.FindIndex(p => p.PupilId == _editingPupil.PupilId);
-                    if (index >= 0)
-                    {
-                        _pupilsDataSource[index] = existingPupil;
-                    }
+                    await notice.OnError("Пользователь с таким номером карты уже существует");
                 }
+                else
+                {
+                    _editModalRef?.SetConfirmLoading(true);
+                    var existingPupil = await RpcClientContext.Pupils
+                        .FirstOrDefaultAsync(p => p.PupilId == _editingPupil.PupilId);
+                    if (existingPupil != null)
+                    {
+                        existingPupil.SurnamePupil = _editingPupil.SurnamePupil;
+                        existingPupil.NamePupil = _editingPupil.NamePupil;
+                        existingPupil.PatronymicPupil = _editingPupil.PatronymicPupil;
+                        existingPupil.ClassNumber = _editingPupil.ClassNumber;
+                        existingPupil.CardNumber = _editingPupil.CardNumber;
+                        existingPupil.CardValidityPeriod = _editingPupil.CardValidityPeriod;
 
-                await _editModalRef.CloseAsync();
-                _form.Reset();
-                _pupilsTable.ReloadData();
-                StateHasChanged();
+                        await RpcClientContext.SaveChangesAsync();
+
+                        var index = _pupilsDataSource.FindIndex(p => p.PupilId == _editingPupil.PupilId);
+                        if (index >= 0)
+                        {
+                            _pupilsDataSource[index] = existingPupil;
+                        }
+                    }
+
+                    await _editModalRef.CloseAsync();
+                    _form.Reset();
+                    _pupilsTable.ReloadData();
+                    StateHasChanged();
+                }
             },
             OnCancel = async e =>
             {
